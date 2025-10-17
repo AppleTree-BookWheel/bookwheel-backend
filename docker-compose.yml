@@ -11,6 +11,8 @@ services:
       - '5432:5432'
     volumes:
       - bookwheel-postgres-data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+      - ./rdb:/rdb
     networks:
       - bookwheel-network
 
