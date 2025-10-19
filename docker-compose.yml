@@ -15,9 +15,19 @@ services:
       - ./rdb:/rdb
     networks:
       - bookwheel-network
+  redis:
+    image: redis:7.4.0
+    container_name: bookwheel-redis
+    ports:
+      - '6379:6379'
+    networks:
+      - bookwheel-network
+    volumes:
+      - bookwheel-redis-data:/data
 
 volumes:
   bookwheel-postgres-data:
+  bookwheel-redis-data:
 
 networks:
   bookwheel-network:
