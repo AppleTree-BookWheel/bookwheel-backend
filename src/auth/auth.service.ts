@@ -4,7 +4,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { AuthRepository } from './auth.repotiory';
 import { RedisService } from 'src/redis/redis.service';
 import { SendVerificationEmailDto } from './dto/request/send-verification-email.dto';
 import { VerifyCodeDto } from './dto/request/verify-code.dto';
@@ -14,7 +13,6 @@ import { CreateCodeDto } from './dto/request/create-code.dto';
 export class AuthService {
   constructor(
     private readonly mailerService: MailerService,
-    private readonly authRepository: AuthRepository,
     private readonly redisService: RedisService,
   ) {}
 
