@@ -1,9 +1,14 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { AuthRepository } from './auth.repotiory';
 import { RedisService } from 'src/redis/redis.service';
-import { CreateVerificationCodeDto } from './dto/request/create-verification-code.dto';
 import { SendVerificationEmailDto } from './dto/request/send-verification-email.dto';
+import { VerifyCodeDto } from './dto/request/verify-code.dto';
+import { CreateCodeDto } from './dto/request/create-code.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,19 +18,6 @@ export class AuthService {
     private readonly redisService: RedisService,
   ) {}
 
-  public async createVerificationCode(
-    createVerificationCodeDto: CreateVerificationCodeDto,
-  ): Promise<void> {
-    const redisKey = `email_verification:${createVerificationCodeDto.email}`;
-    const ttl = 5 * 60; // 유효기간 5분
-    await this.redisService.set(
-      redisKey,
-      createVerificationCodeDto.code,
-      'EX',
-      ttl,
-    );
-  }
-
   // TODO : Transaction 처리 / User 존재 여부 확인 추가
   public async sendVerificationEmail(
     sendVerificationEmailDto: SendVerificationEmailDto,
@@ -34,7 +26,7 @@ export class AuthService {
       100000 + Math.random() * 900000,
     ).toString();
 
-    await this.createVerificationCode({
+    await this.createCode({
       email: sendVerificationEmailDto.email,
       code: verificationCode,
     });
@@ -45,5 +37,29 @@ export class AuthService {
       template: './verification',
       context: { verificationCode },
     });
+  }
+
+  public async createCode(createCodeDto: CreateCodeDto): Promise<void> {
+    const redisKey = `email_verification:${createCodeDto.email}`;
+    const ttl = 5 * 60; // 유효기간 5분
+    await this.redisService.set(redisKey, createCodeDto.code, 'EX', ttl);
+  }
+
+  public async verifyCode(verifyCodeDto: VerifyCodeDto): Promise<void> {
+    const storedCode = await this.redisService.get(
+      `email_verification:${verifyCodeDto.email}`,
+    );
+
+    if (!storedCode) {
+      throw new NotFoundException(
+        '인증 코드가 만료되었거나 존재하지 않습니다.',
+      );
+    }
+
+    if (storedCode !== verifyCodeDto.code) {
+      throw new BadRequestException('인증 코드가 일치하지 않습니다.');
+    }
+
+    await this.redisService.del(`email_verification:${verifyCodeDto.email}`);
   }
 }
