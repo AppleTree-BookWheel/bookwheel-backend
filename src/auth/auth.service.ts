@@ -18,7 +18,12 @@ export class AuthService {
   ): Promise<void> {
     const redisKey = `email_verification:${createVerificationCodeDto.email}`;
     const ttl = 5 * 60; // 유효기간 5분
-    await this.redisService.set(redisKey, createVerificationCodeDto.code, ttl);
+    await this.redisService.set(
+      redisKey,
+      createVerificationCodeDto.code,
+      'EX',
+      ttl,
+    );
   }
 
   // TODO : Transaction 처리 / User 존재 여부 확인 추가
