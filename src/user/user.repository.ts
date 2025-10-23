@@ -9,7 +9,7 @@ export class UserRepository {
     private readonly txHost: TransactionHost<TransactionalAdapterPrisma>,
   ) {}
 
-  public async selectBasicUserById(id: string): Promise<SelectUser | null> {
+  public async selectUserById(id: string): Promise<SelectUser | null> {
     return await this.txHost.tx.user.findFirst({
       ...SELECT_USER,
       where: {
@@ -19,6 +19,13 @@ export class UserRepository {
           },
         },
       },
+    });
+  }
+
+  public async selectUserByIdx(idx: number): Promise<SelectUser | null> {
+    return this.txHost.tx.user.findUnique({
+      ...SELECT_USER,
+      where: { idx },
     });
   }
 }
