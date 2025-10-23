@@ -34,6 +34,10 @@ CREATE TABLE "book_tb" (
   "average_rating"     REAL,
   "ratings_count"      INTEGER,
   "language_code"      VARCHAR(10),
+  "isbn"               VARCHAR(20)  UNIQUE,  
+  "korean_title"       VARCHAR(255),
+  "korean_author"      VARCHAR(255),
+  "korean_cover_path"  VARCHAR(512),
   "created_at"         TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "deleted_at"         TIMESTAMP(3)
 );

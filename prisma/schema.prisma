@@ -66,6 +66,10 @@ model Book {
   averageRating   Float?    @map("average_rating")
   ratingsCount    Int?      @map("ratings_count")
   languageCode    String?   @map("language_code") @db.VarChar(10)
+  isbn            String?   @db.VarChar(20) @unique 
+  koreanTitle     String?   @map("korean_title") @db.VarChar(255) 
+  koreanAuthor    String?   @map("korean_author") @db.VarChar(255)
+  koreanCoverPath String?   @map("korean_cover_path") @db.VarChar(512) 
   createdAt       DateTime  @default(now())
   deletedAt       DateTime?
 
