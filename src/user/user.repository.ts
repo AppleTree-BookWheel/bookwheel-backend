@@ -28,4 +28,17 @@ export class UserRepository {
       where: { idx },
     });
   }
+
+  public async selectUserBySnsId(snsId: string): Promise<SelectUser | null> {
+    return this.txHost.tx.user.findFirst({
+      ...SELECT_USER,
+      where: {
+        socialAuths: {
+          is: {
+            snsId: snsId,
+          },
+        },
+      },
+    });
+  }
 }
