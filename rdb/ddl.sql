@@ -7,6 +7,7 @@ CREATE TABLE "user_tb" (
   "type"               VARCHAR(50),
   "gender"             VARCHAR(50),
   "age"                INTEGER,
+  "gender"             VARCHAR(10),
   "created_at"         TIMESTAMP(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "deleted_at"         TIMESTAMP(3)
 );

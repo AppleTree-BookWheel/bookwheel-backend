@@ -53,6 +53,7 @@ export class UserRepository {
         nickname: input.nickname,
         profileImagePath: input.profileImagePath,
         age: input.age,
+        gender: input.gender,
         type: input.type,
         basicAuths: {
           create: {
