@@ -44,25 +44,21 @@ export class UserRepository {
   }
 
   public async insertUser(input: CreateUserInput): Promise<SelectUser> {
-    const newUser = await this.txHost.tx.user.create({
+    return await this.txHost.tx.user.create({
+      ...SELECT_USER,
       data: {
         nickname: input.nickname,
         profileImagePath: input.profileImagePath,
         age: input.age,
         type: input.type,
-      },
-      ...SELECT_USER,
-    });
-
-    await this.txHost.tx.userBasic.create({
-      data: {
-        userIdx: newUser.idx,
-        id: input.id,
-        password: input.password,
-        email: input.email,
+        basicAuths: {
+          create: {
+            id: input.basicAuths.id,
+            password: input.basicAuths.password,
+            email: input.basicAuths.email,
+          },
+        },
       },
     });
-
-    return newUser;
   }
 }
