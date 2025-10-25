@@ -5,3 +5,5 @@ CREATE DATABASE bookwheel OWNER bookwheel_admin;
 \c bookwheel bookwheel_admin
 
 \i ../rdb/ddl.sql
+
+\i ../rdb/default-seed.sql
