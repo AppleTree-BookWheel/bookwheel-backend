@@ -3,6 +3,7 @@ import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-pr
 import { Injectable } from '@nestjs/common';
 import { SELECT_USER, SelectUser } from './model/prisma-type/select-user';
 import { CreateUserInput } from './inputs/create-user.input';
+import { UpdateUserInput } from './inputs/update-user.input';
 
 @Injectable()
 export class UserRepository {
@@ -14,6 +15,7 @@ export class UserRepository {
     return await this.txHost.tx.user.findFirst({
       ...SELECT_USER,
       where: {
+        deletedAt: null,
         basicAuths: {
           is: {
             id: id,
@@ -26,7 +28,7 @@ export class UserRepository {
   public async selectUserByIdx(idx: number): Promise<SelectUser | null> {
     return this.txHost.tx.user.findUnique({
       ...SELECT_USER,
-      where: { idx },
+      where: { idx, deletedAt: null },
     });
   }
 
@@ -34,6 +36,7 @@ export class UserRepository {
     return this.txHost.tx.user.findFirst({
       ...SELECT_USER,
       where: {
+        deletedAt: null,
         socialAuths: {
           is: {
             snsId: snsId,
@@ -59,6 +62,19 @@ export class UserRepository {
           },
         },
       },
+    });
+  }
+
+  public async updateUserByIdx(
+    idx: number,
+    input: UpdateUserInput,
+  ): Promise<void> {
+    await this.txHost.tx.user.update({
+      data: {
+        nickname: input.nickname,
+        profileImagePath: input.profileImagePath,
+      },
+      where: { idx, deletedAt: null },
     });
   }
 }
