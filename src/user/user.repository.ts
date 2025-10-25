@@ -77,4 +77,13 @@ export class UserRepository {
       where: { idx, deletedAt: null },
     });
   }
+
+  public async softDeleteUserByIdx(idx: number): Promise<void> {
+    await this.txHost.tx.user.update({
+      data: {
+        deletedAt: new Date(),
+      },
+      where: { idx, deletedAt: null },
+    });
+  }
 }
