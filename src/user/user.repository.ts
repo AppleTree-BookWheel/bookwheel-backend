@@ -2,6 +2,7 @@ import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable } from '@nestjs/common';
 import { SELECT_USER, SelectUser } from './model/prisma-type/select-user';
+import { CreateUserInput } from './inputs/create-user.input';
 
 @Injectable()
 export class UserRepository {
@@ -40,5 +41,28 @@ export class UserRepository {
         },
       },
     });
+  }
+
+  public async insertUser(input: CreateUserInput): Promise<SelectUser> {
+    const newUser = await this.txHost.tx.user.create({
+      data: {
+        nickname: input.nickname,
+        profileImagePath: input.profileImagePath,
+        age: input.age,
+        type: input.type,
+      },
+      ...SELECT_USER,
+    });
+
+    await this.txHost.tx.userBasic.create({
+      data: {
+        userIdx: newUser.idx,
+        id: input.id,
+        password: input.password,
+        email: input.email,
+      },
+    });
+
+    return newUser;
   }
 }
