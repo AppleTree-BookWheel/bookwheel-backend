@@ -5,6 +5,7 @@ import { SELECT_USER, SelectUser } from './model/prisma-type/select-user';
 import { CreateUserInput } from './inputs/create-user.input';
 import { UpdateUserInput } from './inputs/update-user.input';
 import { CreateSurveyResponseInput } from './inputs/create-survey-response.input';
+import { UpdateSurveyResponseInput } from './inputs/update-survey-response.input';
 
 @Injectable()
 export class UserRepository {
@@ -81,6 +82,26 @@ export class UserRepository {
     await this.txHost.tx.surveyResponse.createMany({
       data: responseData,
     });
+  }
+
+  public async updateSurveyResponse(
+    idx: number,
+    input: UpdateSurveyResponseInput,
+  ): Promise<void> {
+    const { questionIdx, optionIdx } = input;
+
+    await this.txHost.tx.surveyResponse.updateMany({
+      where: {
+        userIdx: idx,
+        questionIdx: questionIdx,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+
+    await this.insertSurveyResponse(idx, input);
   }
 
   public async updateUserByIdx(
