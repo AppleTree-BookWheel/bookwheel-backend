@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { SELECT_USER, SelectUser } from './model/prisma-type/select-user';
 import { CreateUserInput } from './inputs/create-user.input';
 import { UpdateUserInput } from './inputs/update-user.input';
+import { CreateSurveyResponseInput } from './inputs/create-survey-response.input';
 
 @Injectable()
 export class UserRepository {
@@ -63,6 +64,22 @@ export class UserRepository {
           },
         },
       },
+    });
+  }
+
+  public async insertSurveyResponse(
+    idx: number,
+    input: CreateSurveyResponseInput,
+  ): Promise<void> {
+    const { questionIdx, optionIdx } = input;
+    const responseData = optionIdx.map((optionId) => ({
+      userIdx: idx,
+      questionIdx: questionIdx,
+      optionIdx: optionId,
+    }));
+
+    await this.txHost.tx.surveyResponse.createMany({
+      data: responseData,
     });
   }
 
