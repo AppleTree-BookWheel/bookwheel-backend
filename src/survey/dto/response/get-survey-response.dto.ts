@@ -1,6 +1,6 @@
 import { QuestionType } from 'src/survey/constants/survey-question.enum';
 
-export class GetSurveyResponseDto {
+export class GetSurveyResponseOutDto {
   /**
    * 질문 idx
    *
