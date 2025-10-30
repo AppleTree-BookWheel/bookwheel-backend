@@ -34,7 +34,9 @@ export class SurveyRepository {
     input: CreateSurveyResponseInput,
   ): Promise<void> {
     const { questionIdx, optionIdx } = input;
-    const responseData = optionIdx.map((optionId) => ({
+    const validOptionIdx = optionIdx || [];
+
+    const responseData = validOptionIdx.map((optionId) => ({
       userIdx: idx,
       questionIdx: questionIdx,
       optionIdx: optionId,
