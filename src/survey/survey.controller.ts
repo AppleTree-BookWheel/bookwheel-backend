@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { SurveyService } from './survey.service';
-import { CreateSurveyResponseInput } from './inputs/create-survey-response.input';
 import { CreateSurveyResponseDto } from './dto/request/create-survey-response.dto';
 import { GetSurveyResponseOutDto } from './dto/response/get-survey-response.dto';
 
