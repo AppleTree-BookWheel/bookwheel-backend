@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { SurveyService } from './survey.service';
-import { GetSurveyResponseDto } from './dto/response/get-survey-response.dto';
+import { CreateSurveyResponseInput } from './inputs/create-survey-response.input';
+import { CreateSurveyResponseDto } from './dto/request/create-survey-response.dto';
+import { GetSurveyResponseOutDto } from './dto/response/get-survey-response.dto';
 
 @Controller('survey')
 export class SurveyController {
@@ -12,7 +14,15 @@ export class SurveyController {
   async getSurveyResponseByQuestionIdx(
     @Param('idx') idx: number,
     @Body('questionIdx') questionIdx: number,
-  ): Promise<GetSurveyResponseDto | null> {
+  ): Promise<GetSurveyResponseOutDto | null> {
     return this.surveyService.getSurveyResponseByQuestionIdx(idx, questionIdx);
+  }
+
+  @Post('/response')
+  async createSurveyResponse(
+    @Param('idx') idx: number,
+    @Body() createSurveyResponseDto: CreateSurveyResponseDto,
+  ): Promise<void> {
+    await this.surveyService.createSurveyResponse(idx, createSurveyResponseDto);
   }
 }
