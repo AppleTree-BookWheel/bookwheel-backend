@@ -68,42 +68,6 @@ export class UserRepository {
     });
   }
 
-  public async insertSurveyResponse(
-    idx: number,
-    input: CreateSurveyResponseInput,
-  ): Promise<void> {
-    const { questionIdx, optionIdx } = input;
-    const responseData = optionIdx.map((optionId) => ({
-      userIdx: idx,
-      questionIdx: questionIdx,
-      optionIdx: optionId,
-    }));
-
-    await this.txHost.tx.surveyResponse.createMany({
-      data: responseData,
-    });
-  }
-
-  public async updateSurveyResponse(
-    idx: number,
-    input: UpdateSurveyResponseInput,
-  ): Promise<void> {
-    const { questionIdx, optionIdx } = input;
-
-    await this.txHost.tx.surveyResponse.updateMany({
-      where: {
-        userIdx: idx,
-        questionIdx: questionIdx,
-        deletedAt: null,
-      },
-      data: {
-        deletedAt: new Date(),
-      },
-    });
-
-    await this.insertSurveyResponse(idx, input);
-  }
-
   public async updateUserByIdx(
     idx: number,
     input: UpdateUserInput,
