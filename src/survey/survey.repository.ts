@@ -3,6 +3,10 @@ import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-pr
 import { Injectable } from '@nestjs/common';
 import { CreateSurveyResponseInput } from './inputs/create-survey-response.input';
 import { UpdateSurveyResponseInput } from './inputs/update-survey-response.input';
+import {
+  SELECT_SURVEY_RESPONSE,
+  SelectSurveyResponse,
+} from './model/prisma-type/select-survey-response';
 
 @Injectable()
 export class SurveyRepository {
@@ -10,24 +14,21 @@ export class SurveyRepository {
     private readonly txHost: TransactionHost<TransactionalAdapterPrisma>,
   ) {}
 
-  public async selectOptionsByQuestionIdx(
+  public async selectSurveyResponseByQuestionIdx(
     idx: number,
     questionIdx: number,
-  ): Promise<number[]> {
-    const surveyResponses = await this.txHost.tx.surveyResponse.findMany({
+  ): Promise<SelectSurveyResponse[] | null> {
+    return await this.txHost.tx.surveyResponse.findMany({
+      ...SELECT_SURVEY_RESPONSE,
       where: {
         userIdx: idx,
         questionIdx: questionIdx,
         deletedAt: null,
       },
-      select: {
-        optionIdx: true,
-      },
     });
-
-    return surveyResponses.map((response) => response.optionIdx);
   }
 
+  // insert는 한 번에 여러 질문의 답변(optionIdx)을 넣을 수 있도록 구현
   public async insertSurveyResponse(
     idx: number,
     input: CreateSurveyResponseInput,
@@ -64,10 +65,14 @@ export class SurveyRepository {
     await this.insertSurveyResponse(idx, input);
   }
 
-  public async deleteSurveyResponses(idx: number): Promise<void> {
+  public async deleteSurveyResponse(
+    idx: number,
+    questionIdx: number,
+  ): Promise<void> {
     await this.txHost.tx.surveyResponse.updateMany({
       where: {
         userIdx: idx,
+        questionIdx: questionIdx,
         deletedAt: null,
       },
       data: {
