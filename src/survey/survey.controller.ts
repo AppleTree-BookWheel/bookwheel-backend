@@ -15,7 +15,7 @@ import { GetSurveyResponseOutDto } from './dto/response/get-survey-response.dto'
 export class SurveyController {
   constructor(private readonly surveyService: SurveyService) {}
 
-  // TODO : 토큰 구현후 userIdx 받는 방식 변경
+  // TODO : 토큰 구현후 userIdx 받는 방식 변경 / 유효성 검사 추가
 
   @Get('/response')
   async getSurveyResponseByQuestionIdx(
