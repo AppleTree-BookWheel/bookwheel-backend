@@ -6,6 +6,7 @@ CREATE TABLE "user_tb" (
   "profile_image_path" VARCHAR(255),
   "type"               VARCHAR(50),
   "age"                INTEGER,
+  "gender"             VARCHAR(10),
   "created_at"         TIMESTAMP(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "deleted_at"         TIMESTAMP(3)
 );
