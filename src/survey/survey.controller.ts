@@ -17,7 +17,7 @@ export class SurveyController {
 
   // TODO : 토큰 구현후 userIdx 받는 방식 변경 / 유효성 검사 추가
 
-  @Get('/response')
+  @Get('/response/:idx')
   async getSurveyResponseByQuestionIdx(
     @Param('idx') idx: number,
     @Body('questionIdx') questionIdx: number,
@@ -25,7 +25,7 @@ export class SurveyController {
     return this.surveyService.getSurveyResponseByQuestionIdx(idx, questionIdx);
   }
 
-  @Post('/response')
+  @Post('/response/:idx')
   async createSurveyResponse(
     @Param('idx') idx: number,
     @Body() createSurveyResponseDto: CreateSurveyResponseDto,
@@ -33,7 +33,7 @@ export class SurveyController {
     await this.surveyService.createSurveyResponse(idx, createSurveyResponseDto);
   }
 
-  @Put('/response')
+  @Put('/response/:idx')
   async updateSurveyResponse(
     @Param('idx') idx: number,
     @Body() updateSurveyResponseDto: CreateSurveyResponseDto,
@@ -41,7 +41,7 @@ export class SurveyController {
     await this.surveyService.updateSurveyResponse(idx, updateSurveyResponseDto);
   }
 
-  @Delete('/response')
+  @Delete('/response/:idx')
   async deleteSurveyResponse(
     @Param('idx') idx: number,
     @Body('questionIdx') questionIdx: number,
