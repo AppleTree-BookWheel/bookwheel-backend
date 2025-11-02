@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
-import { PrismaService } from 'prisma/prisma.service';
-import { AppModule } from 'src/app.module';
+import { PrismaService } from '../../../../prisma/prisma.service';
+import { AppModule } from '../../../../src/app.module';
+import request = require('supertest');
 
 // TODO : 토큰 구현 후 구조 변경 필요
 
@@ -46,7 +47,7 @@ describe('Survey E2E test', () => {
   afterEach(async () => {
     await prisma.surveyResponse.deleteMany({
       where: {
-        idx: mockUser.idx,
+        userIdx: mockUser.userIdx,
       },
     });
     await prisma.userBasic.deleteMany({ where: { userIdx: mockUser.idx } });
