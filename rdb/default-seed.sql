@@ -1,6 +1,6 @@
 INSERT INTO survey_question_tb (idx, content) VALUES
 (1, '주로 어떤 내용의 책에 손이 가시나요?'),
-(2, '책을 통해 어떤 기분을 느끼고 싶으신가요?')
+(2, '책을 통해 어떤 기분을 느끼고 싶으신가요?');
 
 INSERT INTO survey_option_tb (question_idx, content) VALUES
 (1, '📖 소설'),
