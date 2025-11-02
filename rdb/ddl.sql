@@ -161,11 +161,6 @@ CREATE TABLE "to_read_tb" (
   PRIMARY KEY ("user_idx", "book_idx") -- 복합 PK 설정
 );
 
-CREATE TABLE "tag_tb" (
-  "idx"      SERIAL       PRIMARY KEY,
-  "tag_name" VARCHAR(50)  NOT NULL
-);
-
 -- DDL Part 2: FOREIGN KEYS and UNIQUE INDEXES
 
 -- 1:1 관계 FK (PK 겸 FK 역할)
