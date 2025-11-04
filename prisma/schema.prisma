@@ -1,4 +1,6 @@
 generator client {
+    // nestjs 개발 -> prisma-client-js
+    // python 개발 -> prisma-client-py
   provider = "prisma-client-js"
 }
 
@@ -58,8 +60,10 @@ model UserSocial {
 
 model Book {
   idx             Int       @id @default(autoincrement())
-  title           String?   @db.VarChar(255)
-  author          String?   @db.VarChar(255)
+  goodreadsBookId BigInt    @map("goodreads_book_id") @unique
+  workId          BigInt    @map("work_id") @unique
+  title           String    @db.VarChar(255)
+  author          String    @db.VarChar(255)
   publicationYear Int?      @map("publication_year")
   description     String?   @db.VarChar(512)
   bookFilePath    String    @map("book_file_path") @db.VarChar(255)
@@ -67,8 +71,8 @@ model Book {
   averageRating   Float?    @map("average_rating")
   ratingsCount    Int?      @map("ratings_count")
   languageCode    String?   @map("language_code") @db.VarChar(10)
-  isbn            String?   @db.VarChar(20) @unique 
-  koreanTitle     String?   @map("korean_title") @db.VarChar(255) 
+  isbn            String?   @db.VarChar(13) @unique
+  koreanTitle     String?   @map("korean_title") @db.VarChar(255)
   koreanAuthor    String?   @map("korean_author") @db.VarChar(255)
   koreanCoverPath String?   @map("korean_cover_path") @db.VarChar(512) 
   createdAt       DateTime  @default(now()) @map("created_at")
@@ -102,7 +106,6 @@ model BookReview {
 }
 
 model BookRating {
-  idx       Int       @id @default(autoincrement())
   userIdx   Int       @map("user_idx")
   bookIdx   Int       @map("book_idx")
   rating    Float
@@ -112,6 +115,7 @@ model BookRating {
   user User @relation(fields: [userIdx], references: [idx])
   book Book @relation(fields: [bookIdx], references: [idx])
 
+  @@unique([bookIdx, userIdx], map: "IDX_book_rating_tb")
   @@map("book_rating_tb")
 }
 
@@ -125,15 +129,15 @@ model Tag {
 }
 
 model BookTag {
-  bookIdx Int @map("book_idx")
+  goodreadsBookId BigInt @map("goodreads_book_id")
   tagIdx  Int @map("tag_idx")
   count   Int @default(1)
 
-  book Book @relation(fields: [bookIdx], references: [idx])
+  book Book @relation(fields: [goodreadsBookId], references: [goodreadsBookId])
   tag  Tag  @relation(fields: [tagIdx], references: [idx])
 
   // UNIQUE INDEX IDX_book_tag_tb
-  @@id([bookIdx, tagIdx])
+  @@id([goodreadsBookId, tagIdx])
   @@map("book_tag_tb")
 }
 
