@@ -33,6 +33,9 @@ model User {
   ratings          BookRating[]
   highlights       BookHighlight[]
   comments         BookComment[]
+  myBookProgresses MyBookProgress[]
+  partyBookProgresses     PartyBookProgress[]
+
 
   @@map("user_tb")
 }
@@ -85,8 +88,24 @@ model Book {
   toReads    ToRead[]
   highlights BookHighlight[]
   comments   BookComment[]
+  myBookProgresses MyBookProgress[]
+
 
   @@map("book_tb")
+}
+
+model MyBookProgress {
+  userIdx           Int       @map("user_idx")
+  bookIdx           Int       @map("book_idx")
+  currentCfiPosition String    @map("current_cfi_position") @db.Text
+  updatedAt         DateTime  @default(now()) @map("updated_at")
+
+  // Relationships
+  user User @relation(fields: [userIdx], references: [idx])
+  book Book @relation(fields: [bookIdx], references: [idx])
+
+  @@id([userIdx, bookIdx]) // 복합 기본키 (UNIQUE INDEX 대체)
+  @@map("my_book_progress_tb")
 }
 
 model BookReview {
@@ -228,8 +247,22 @@ model Party {
   host        User          @relation("PartyHost", fields: [hostUserIdx], references: [idx])
   book        Book          @relation(fields: [bookIdx], references: [idx])
   memberships PartyMember[]
+  partyBookProgresses     PartyBookProgress[]
 
   @@map("party_tb")
+}
+
+model PartyBookProgress {
+  partyIdx          Int       @map("party_idx")
+  userIdx           Int       @map("user_idx")
+  currentCfiPosition String    @map("current_cfi_position") @db.Text
+  updatedAt         DateTime  @default(now()) @map("updated_at")
+
+  party Party @relation(fields: [partyIdx], references: [idx])
+  user  User  @relation(fields: [userIdx], references: [idx])
+
+  @@id([partyIdx, userIdx]) 
+  @@map("party_book_progress_tb")
 }
 
 model PartyMember {
