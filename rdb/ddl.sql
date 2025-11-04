@@ -44,6 +44,15 @@ CREATE TABLE "book_tb" (
   "deleted_at"         TIMESTAMP(3)
 );
 
+CREATE TABLE "my_book_progress_tb" (
+  "user_idx"            INTEGER      NOT NULL,
+  "book_idx"            INTEGER      NOT NULL,
+  "current_cfi_position" TEXT         NOT NULL,
+  "updated_at"          TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY ("user_idx", "book_idx")
+);
+
+
 CREATE TABLE "book_review_tb" (
   "idx"        SERIAL       PRIMARY KEY,
   "book_idx"   INTEGER      NOT NULL,
@@ -128,6 +137,14 @@ CREATE TABLE "party_tb" (
   "deleted_at"      TIMESTAMP(3)
 );
 
+CREATE TABLE "party_book_progress_tb" (
+  "party_idx"           INTEGER      NOT NULL,
+  "user_idx"            INTEGER      NOT NULL,
+  "current_cfi_position" TEXT         NOT NULL,
+  "updated_at"          TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY ("party_idx", "user_idx")
+);
+
 CREATE TABLE "party_members_tb" (
   "party_idx" INTEGER     NOT NULL,
   "user_idx"  INTEGER     NOT NULL,
@@ -186,6 +203,8 @@ ALTER TABLE "message_tb" ADD CONSTRAINT "FK_message_tb_receiver_idx" FOREIGN KEY
 -- Party FKs
 ALTER TABLE "party_tb" ADD CONSTRAINT "FK_party_tb_host_user_idx" FOREIGN KEY ("host_user_idx") REFERENCES "user_tb" ("idx");
 ALTER TABLE "party_tb" ADD CONSTRAINT "FK_party_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
+ALTER TABLE "party_book_progress_tb" ADD CONSTRAINT "FK_party_book_progress_tb_party_idx" FOREIGN KEY ("party_idx") REFERENCES "party_tb" ("idx") ON DELETE CASCADE;
+ALTER TABLE "party_book_progress_tb" ADD CONSTRAINT "FK_party_book_progress_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx") ON DELETE CASCADE;
 
 -- Party Member FKs
 ALTER TABLE "party_members_tb" ADD CONSTRAINT "FK_party_members_tb_party_idx" FOREIGN KEY ("party_idx") REFERENCES "party_tb" ("idx");
@@ -202,6 +221,9 @@ ALTER TABLE "to_read_tb" ADD CONSTRAINT "FK_to_read_tb_user_idx" FOREIGN KEY ("u
 ALTER TABLE "to_read_tb" ADD CONSTRAINT "FK_to_read_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
 ALTER TABLE "book_highlight_tb" ADD CONSTRAINT "FK_book_highlight_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
 ALTER TABLE "book_highlight_tb" ADD CONSTRAINT "FK_book_highlight_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
+ALTER TABLE "my_book_progress_tb" ADD CONSTRAINT "FK_my_book_progress_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx") ON DELETE CASCADE;
+ALTER TABLE "my_book_progress_tb" ADD CONSTRAINT "FK_my_book_progress_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx") ON DELETE CASCADE;
+
 
 -- Comment / Highlight FKs
 ALTER TABLE "book_comment_tb" ADD CONSTRAINT "FK_book_comment_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
