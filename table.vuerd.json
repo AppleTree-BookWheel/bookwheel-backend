@@ -4,9 +4,9 @@
   "settings": {
     "width": 4000,
     "height": 4000,
-    "scrollTop": -2515.9815,
-    "scrollLeft": -2025.5791,
-    "zoomLevel": 0.84,
+    "scrollTop": -801.6881,
+    "scrollLeft": -1363.2162,
+    "zoomLevel": 1,
     "show": 431,
     "database": 16,
     "databaseName": "",
@@ -3832,7 +3832,7 @@
       "uW8YjANazGLemRz0IHn3B": {
         "id": "uW8YjANazGLemRz0IHn3B",
         "tableId": "w9S-1Kg9QsZunZgPs6ZhI",
-        "name": "goodreads_Book_Id",
+        "name": "goodreads_book_Id",
         "comment": "",
         "dataType": "BIGINT",
         "default": "",
@@ -3845,7 +3845,7 @@
           "widthDefault": 60
         },
         "meta": {
-          "updateAt": 1762265926176,
+          "updateAt": 1762321846511,
           "createAt": 1762265618523
         }
       },
