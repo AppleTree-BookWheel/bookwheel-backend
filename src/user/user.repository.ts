@@ -4,8 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { SELECT_USER, SelectUser } from './model/prisma-type/select-user';
 import { CreateUserInput } from './inputs/create-user.input';
 import { UpdateUserInput } from './inputs/update-user.input';
-import { CreateSurveyResponseInput } from './inputs/create-survey-response.input';
-import { UpdateSurveyResponseInput } from './inputs/update-survey-response.input';
 
 @Injectable()
 export class UserRepository {
