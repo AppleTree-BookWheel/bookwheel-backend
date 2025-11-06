@@ -20,8 +20,11 @@ export class SurveyResponseModel {
     Object.assign(this, data);
   }
 
-  static fromPrisma(responses: SelectSurveyResponse[]): SurveyResponseModel {
+  static fromPrisma(
+    responses: SelectSurveyResponse[],
+  ): SurveyResponseModel | null {
     if (responses.length === 0) {
+      return null;
     }
 
     const optionIds = responses.map((response) => response.optionIdx);

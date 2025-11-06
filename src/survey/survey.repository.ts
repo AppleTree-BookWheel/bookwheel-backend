@@ -17,7 +17,7 @@ export class SurveyRepository {
   public async selectSurveyResponseByQuestionIdx(
     idx: number,
     questionIdx: number,
-  ): Promise<SelectSurveyResponse[] | null> {
+  ): Promise<SelectSurveyResponse[]> {
     return await this.txHost.tx.surveyResponse.findMany({
       ...SELECT_SURVEY_RESPONSE,
       where: {
@@ -53,14 +53,10 @@ export class SurveyRepository {
   ): Promise<void> {
     const { questionIdx, optionIdx } = input;
 
-    await this.txHost.tx.surveyResponse.updateMany({
+    await this.txHost.tx.surveyResponse.deleteMany({
       where: {
         userIdx: idx,
         questionIdx: questionIdx,
-        deletedAt: null,
-      },
-      data: {
-        deletedAt: new Date(),
       },
     });
 
@@ -71,14 +67,11 @@ export class SurveyRepository {
     idx: number,
     questionIdx: number,
   ): Promise<void> {
-    await this.txHost.tx.surveyResponse.updateMany({
+    await this.txHost.tx.surveyResponse.deleteMany({
       where: {
         userIdx: idx,
         questionIdx: questionIdx,
         deletedAt: null,
-      },
-      data: {
-        deletedAt: new Date(),
       },
     });
   }

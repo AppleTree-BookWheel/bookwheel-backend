@@ -12,9 +12,17 @@ export class SurveyService {
     idx: number,
     questionIdx: number,
   ): Promise<SurveyResponseModel | null> {
-    return this.surveyRepository
-      .selectSurveyResponseByQuestionIdx(idx, questionIdx)
-      .then(SurveyResponseModel.fromPrisma);
+    const response =
+      await this.surveyRepository.selectSurveyResponseByQuestionIdx(
+        idx,
+        questionIdx,
+      );
+
+    if (response.length == 0) {
+      return null;
+    }
+
+    return SurveyResponseModel.fromPrisma(response);
   }
 
   public async createSurveyResponse(
