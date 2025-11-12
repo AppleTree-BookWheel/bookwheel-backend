@@ -9,6 +9,7 @@ export const SELECT_USER = Prisma.validator<Prisma.UserDefaultArgs>()({
     profileImagePath: true,
     type: true,
     age: true,
+    gender: true,
     createdAt: true,
 
     basicAuths: SELECT_USER_BASIC,
