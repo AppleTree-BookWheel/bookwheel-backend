@@ -3,6 +3,7 @@ import { UserRepository } from './user.repository';
 import { UserModel } from './model/user.model';
 import { CreateUserInput } from './inputs/create-user.input';
 import { User } from '@prisma/client';
+import { UpdateUserInput } from './inputs/update-user.input';
 
 @Injectable()
 export class UserService {
@@ -33,5 +34,9 @@ export class UserService {
     return await this.userRepository
       .insertUser(input)
       .then(UserModel.fromPrisma);
+  }
+
+  public async updateUser(idx: number, input: UpdateUserInput): Promise<void> {
+    await this.userRepository.updateUserByIdx(idx, input);
   }
 }
