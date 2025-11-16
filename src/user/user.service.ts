@@ -42,4 +42,8 @@ export class UserService {
   ): Promise<void> {
     await this.userRepository.updateUserByIdx(idx, input);
   }
+
+  public async deleteUserByIdx(idx: number): Promise<void> {
+    await this.userRepository.deleteUserByIdx(idx);
+  }
 }
