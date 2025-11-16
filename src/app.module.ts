@@ -4,12 +4,12 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from 'prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
-import { SurveyModule } from './survey/survey.module';
 import { ClsModule } from 'nestjs-cls';
 import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { PrismaService } from '../prisma/prisma.service';
-import { UserModule } from './user/user.module';
+import { SurveyModule } from './api/survey/survey.module';
+import { UserModule } from './api/user/user.module';
 
 @Module({
   imports: [
