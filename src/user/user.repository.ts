@@ -79,6 +79,22 @@ export class UserRepository {
     });
   }
 
+  public async updatePasswordByIdx(
+    idx: number,
+    newPassword: string,
+  ): Promise<void> {
+    await this.txHost.tx.user.update({
+      data: {
+        basicAuths: {
+          update: {
+            password: newPassword,
+          },
+        },
+      },
+      where: { idx, deletedAt: null },
+    });
+  }
+
   public async deleteUserByIdx(idx: number): Promise<void> {
     await this.txHost.tx.user.update({
       data: {
