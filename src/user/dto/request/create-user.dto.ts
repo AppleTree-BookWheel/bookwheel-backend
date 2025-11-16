@@ -22,7 +22,6 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsInt()
-  @Type(() => Number)
   public age?: number;
 
   @IsOptional()

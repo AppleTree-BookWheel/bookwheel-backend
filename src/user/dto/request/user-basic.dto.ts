@@ -1,7 +1,7 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 /**
- * 일반 회원가입 DTO
+ * 일반 회원가입 유저의 createUserDto 를 위한 내부 dto
  */
 export class UserBasicDto {
   /**
