@@ -41,6 +41,6 @@ export class UserController {
     @Param('idx', ParseIntPipe) idx: number,
     updateUserDto: Partial<CreateUserDto>,
   ): Promise<void> {
-    return this.userService.updateUser(idx, updateUserDto);
+    return this.userService.updateUserByIdx(idx, updateUserDto);
   }
 }

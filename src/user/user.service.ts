@@ -36,7 +36,10 @@ export class UserService {
       .then(UserModel.fromPrisma);
   }
 
-  public async updateUser(idx: number, input: UpdateUserInput): Promise<void> {
+  public async updateUserByIdx(
+    idx: number,
+    input: UpdateUserInput,
+  ): Promise<void> {
     await this.userRepository.updateUserByIdx(idx, input);
   }
 }
