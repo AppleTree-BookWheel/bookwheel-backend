@@ -5,6 +5,7 @@ CREATE TABLE "user_tb" (
   "nickname"           VARCHAR(255)  NOT NULL DEFAULT '새로운햄스터',
   "profile_image_path" VARCHAR(255),
   "type"               VARCHAR(50),
+  "gender"             VARCHAR(50),
   "age"                INTEGER,
   "created_at"         TIMESTAMP(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "deleted_at"         TIMESTAMP(3)
@@ -24,34 +25,24 @@ CREATE TABLE "user_social_tb" (
 );
 
 CREATE TABLE "book_tb" (
-  "idx"                SERIAL       PRIMARY KEY,
-  "goodreads_book_id"  BIGINT       NOT NULL UNIQUE, 
-  "work_id"            BIGINT       NOT NULL UNIQUE,
+  "idx"                INTEGER       PRIMARY KEY,
   "title"              TEXT         NOT NULL,
   "author"             TEXT         NOT NULL,
+  "publisher"          VARCHAR(255),
   "publication_year"   INTEGER,
-  "description"        VARCHAR(512),
-  "book_file_path"     VARCHAR(255) NOT NULL,
-  "cover_image_path"   VARCHAR(255),
-  "average_rating"     REAL         NOT NULL, 
-  "ratings_count"      INTEGER      NOT NULL, 
-  "language_code"      VARCHAR(10),
-  "isbn"               VARCHAR(13)  UNIQUE, 
-  "korean_title"       TEXT, 
-  "korean_author"      TEXT,
-  "korean_cover_path"  VARCHAR(512), 
+  "description"        TEXT,
+  "book_file_path"     VARCHAR(512) NOT NULL,
+  "cover_image_path"   VARCHAR(512) NOT NULL,
+  "average_rating"     REAL         NOT NULL, -- 평균 별점
+  "ratings_count"      INTEGER      NOT NULL, -- 별점 참여자 수
+  "language_code"      VARCHAR(10), -- 언어 코드 (책의 언어)
+  "isbn13"             VARCHAR(13),  -- ISBN 국제 표준 도서 번호
+  "korean_title"       TEXT, -- 한국어번역 제목
+  "korean_author"      TEXT, -- 한국어판 저자/역자
+  "korean_cover_path"  VARCHAR(512), -- 한국어판 커버 이미지
   "created_at"         TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "deleted_at"         TIMESTAMP(3)
 );
-
-CREATE TABLE "my_book_progress_tb" (
-  "user_idx"            INTEGER      NOT NULL,
-  "book_idx"            INTEGER      NOT NULL,
-  "current_cfi_position" TEXT         NOT NULL,
-  "updated_at"          TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY ("user_idx", "book_idx")
-);
-
 
 CREATE TABLE "book_review_tb" (
   "idx"        SERIAL       PRIMARY KEY,
@@ -73,14 +64,13 @@ CREATE TABLE "book_rating_tb" (
 
 CREATE TABLE "tag_tb" (
   "idx"      SERIAL       PRIMARY KEY,
-  "tag_name" VARCHAR(50)  NOT NULL
+  "name"     VARCHAR(50)  NOT NULL
 );
 
 CREATE TABLE "book_tag_tb" (
-  "goodreads_book_id" BIGINT NOT NULL,
-  "tag_idx"           INTEGER NOT NULL,
-  "count"             INTEGER NOT NULL DEFAULT 1,
-  PRIMARY KEY ("goodreads_book_id", "tag_idx") -- 복합 PK 설정
+  "book_idx" INTEGER NOT NULL,
+  "tag_idx"  INTEGER NOT NULL,
+  PRIMARY KEY ("book_idx", "tag_idx") -- 복합 PK 설정
 );
 
 CREATE TABLE "book_highlight_tb" (
@@ -137,14 +127,6 @@ CREATE TABLE "party_tb" (
   "deleted_at"      TIMESTAMP(3)
 );
 
-CREATE TABLE "party_book_progress_tb" (
-  "party_idx"           INTEGER      NOT NULL,
-  "user_idx"            INTEGER      NOT NULL,
-  "current_cfi_position" TEXT         NOT NULL,
-  "updated_at"          TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY ("party_idx", "user_idx")
-);
-
 CREATE TABLE "party_members_tb" (
   "party_idx" INTEGER     NOT NULL,
   "user_idx"  INTEGER     NOT NULL,
@@ -160,7 +142,8 @@ CREATE TABLE "survey_question_tb" (
 CREATE TABLE "survey_option_tb" (
   "idx"          SERIAL       PRIMARY KEY,
   "question_idx" INTEGER      NOT NULL,
-  "content"      VARCHAR(255)
+  "content"      VARCHAR(255),
+  "book_idx"     INTEGER
 );
 
 CREATE TABLE "survey_response_tb" (
@@ -180,6 +163,24 @@ CREATE TABLE "to_read_tb" (
   PRIMARY KEY ("user_idx", "book_idx") -- 복합 PK 설정
 );
 
+CREATE TABLE "my_book_progress_tb" (
+  "user_idx"               INTEGER      NOT NULL,
+  "book_idx"               INTEGER      NOT NULL,
+  "progress"               REAL         NOT NULL DEFAULT 0.0,
+  "current_cfi_position"   TEXT  NOT NULL,
+  "updated_at"             TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY ("user_idx", "book_idx")
+);
+
+CREATE TABLE "party_book_progress_tb" (
+  "party_idx"              INTEGER      NOT NULL,
+  "user_idx"               INTEGER      NOT NULL,
+  "progress"               REAL         NOT NULL DEFAULT 0.0,
+  "current_cfi_position"   TEXT         NOT NULL,
+  "updated_at"             TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY ("party_idx", "user_idx")
+);
+
 -- DDL Part 2: FOREIGN KEYS and UNIQUE INDEXES
 
 -- 1:1 관계 FK (PK 겸 FK 역할)
@@ -191,6 +192,7 @@ ALTER TABLE "survey_option_tb" ADD CONSTRAINT "FK_survey_option_tb_question_idx"
 ALTER TABLE "survey_response_tb" ADD CONSTRAINT "FK_survey_response_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
 ALTER TABLE "survey_response_tb" ADD CONSTRAINT "FK_survey_response_tb_question_idx" FOREIGN KEY ("question_idx") REFERENCES "survey_question_tb" ("idx");
 ALTER TABLE "survey_response_tb" ADD CONSTRAINT "FK_survey_response_tb_option_idx" FOREIGN KEY ("option_idx") REFERENCES "survey_option_tb" ("idx");
+ALTER TABLE "survey_option_tb" ADD CONSTRAINT "FK_survey_option_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
 
 -- Friendship FKs
 ALTER TABLE "friend_tb" ADD CONSTRAINT "FK_friend_tb_request_user_idx" FOREIGN KEY ("request_user_idx") REFERENCES "user_tb" ("idx");
@@ -203,8 +205,6 @@ ALTER TABLE "message_tb" ADD CONSTRAINT "FK_message_tb_receiver_idx" FOREIGN KEY
 -- Party FKs
 ALTER TABLE "party_tb" ADD CONSTRAINT "FK_party_tb_host_user_idx" FOREIGN KEY ("host_user_idx") REFERENCES "user_tb" ("idx");
 ALTER TABLE "party_tb" ADD CONSTRAINT "FK_party_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
-ALTER TABLE "party_book_progress_tb" ADD CONSTRAINT "FK_party_book_progress_tb_party_idx" FOREIGN KEY ("party_idx") REFERENCES "party_tb" ("idx") ON DELETE CASCADE;
-ALTER TABLE "party_book_progress_tb" ADD CONSTRAINT "FK_party_book_progress_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx") ON DELETE CASCADE;
 
 -- Party Member FKs
 ALTER TABLE "party_members_tb" ADD CONSTRAINT "FK_party_members_tb_party_idx" FOREIGN KEY ("party_idx") REFERENCES "party_tb" ("idx");
@@ -212,17 +212,20 @@ ALTER TABLE "party_members_tb" ADD CONSTRAINT "FK_party_members_tb_user_idx" FOR
 
 -- Book Activity FKs
 ALTER TABLE "book_review_tb" ADD CONSTRAINT "FK_book_review_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
-ALTER TABLE "book_review_tb" ADD CONSTRAINT "FK_book_review_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx") ON DELETE CASCADE;
+ALTER TABLE "book_review_tb" ADD CONSTRAINT "FK_book_review_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
 ALTER TABLE "book_rating_tb" ADD CONSTRAINT "FK_book_rating_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
-ALTER TABLE "book_rating_tb" ADD CONSTRAINT "FK_book_rating_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx") ON DELETE CASCADE;
-ALTER TABLE "book_tag_tb" ADD CONSTRAINT "FK_book_tag_tb_goodreads_book_id" FOREIGN KEY ("goodreads_book_id") REFERENCES "book_tb" ("goodreads_book_id") ON DELETE CASCADE;
+ALTER TABLE "book_rating_tb" ADD CONSTRAINT "FK_book_rating_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
+ALTER TABLE "book_tag_tb" ADD CONSTRAINT "FK_book_tag_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
 ALTER TABLE "book_tag_tb" ADD CONSTRAINT "FK_book_tag_tb_tag_idx" FOREIGN KEY ("tag_idx") REFERENCES "tag_tb" ("idx");
 ALTER TABLE "to_read_tb" ADD CONSTRAINT "FK_to_read_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
 ALTER TABLE "to_read_tb" ADD CONSTRAINT "FK_to_read_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
 ALTER TABLE "book_highlight_tb" ADD CONSTRAINT "FK_book_highlight_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
 ALTER TABLE "book_highlight_tb" ADD CONSTRAINT "FK_book_highlight_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
-ALTER TABLE "my_book_progress_tb" ADD CONSTRAINT "FK_my_book_progress_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx") ON DELETE CASCADE;
-ALTER TABLE "my_book_progress_tb" ADD CONSTRAINT "FK_my_book_progress_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx") ON DELETE CASCADE;
+ALTER TABLE "my_book_progress_tb" ADD CONSTRAINT "FK_my_book_progress_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
+ALTER TABLE "my_book_progress_tb" ADD CONSTRAINT "FK_my_book_progress_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
+ALTER TABLE "party_book_progress_tb" ADD CONSTRAINT "FK_party_book_progress_tb_party_idx" FOREIGN KEY ("party_idx") REFERENCES "party_tb" ("idx");
+ALTER TABLE "party_book_progress_tb" ADD CONSTRAINT "FK_party_book_progress_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
+
 
 
 -- Comment / Highlight FKs
@@ -235,5 +238,5 @@ ALTER TABLE "book_comment_tb" ADD CONSTRAINT "FK_book_comment_tb_highlight_idx" 
 CREATE UNIQUE INDEX "IDX_book_review_tb" ON "book_review_tb" ("book_idx", "user_idx");
 CREATE UNIQUE INDEX "IDX_friend_tb" ON "friend_tb" ("request_user_idx", "receive_user_idx");
 CREATE UNIQUE INDEX "IDX_party_members_tb" ON "party_members_tb" ("party_idx", "user_idx");
-CREATE UNIQUE INDEX "IDX_book_tag_tb" ON "book_tag_tb" ("goodreads_book_id", "tag_idx");
+CREATE UNIQUE INDEX "IDX_book_tag_tb" ON "book_tag_tb" ("book_idx", "tag_idx");
 CREATE UNIQUE INDEX "IDX_to_read_tb" ON "to_read_tb" ("user_idx", "book_idx");
