@@ -1,5 +1,5 @@
 import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
-import { GenderType } from 'src/user/constants/gender-type.enum';
+import { GenderType } from '../../constants/gender-type.enum';
 
 export class UpdateUserDto {
   @IsOptional()

@@ -1,5 +1,5 @@
-import { GenderType } from 'src/user/constants/gender-type.enum'; // 경로에 맞게 수정 필요
-import { UserType } from 'src/user/constants/user-type.enum'; // 경로에 맞게 수정 필요
+import { GenderType } from '../../constants/gender-type.enum';
+import { UserType } from '../../constants/user-type.enum';
 
 /**
  * 사용자 생성 응답 DTO
