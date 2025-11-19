@@ -9,6 +9,7 @@ import {
 import { UserService } from './user.service';
 import { GetUserResponseDto } from './dto/response/get-user-response.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
+import { UpdatePasswordDto } from './dto/request/update-password.dto';
 
 @Controller('user')
 export class UserController {
@@ -34,6 +35,14 @@ export class UserController {
     updateUserDto: UpdateUserDto,
   ): Promise<void> {
     return this.userService.updateUserByIdx(idx, updateUserDto);
+  }
+
+  @Patch('/:idx/password')
+  async updatePasswordByIdx(
+    @Param('idx', ParseIntPipe) idx: number,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<void> {
+    return this.userService.updatePasswordByIdx(idx, updatePasswordDto);
   }
 
   @Delete('/:idx')
