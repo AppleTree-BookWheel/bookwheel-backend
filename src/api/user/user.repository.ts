@@ -46,6 +46,19 @@ export class UserRepository {
     });
   }
 
+  public async selectPasswordByIdx(idx: number): Promise<string | null> {
+    const result = await this.txHost.tx.userBasic.findUnique({
+      where: {
+        userIdx: idx,
+      },
+      select: {
+        password: true,
+      },
+    });
+
+    return result?.password || null;
+  }
+
   public async insertUser(input: CreateUserInput): Promise<SelectUser> {
     return await this.txHost.tx.user.create({
       ...SELECT_USER,
@@ -81,13 +94,13 @@ export class UserRepository {
 
   public async updatePasswordByIdx(
     idx: number,
-    newPassword: string,
+    hashedPassword: string,
   ): Promise<void> {
     await this.txHost.tx.user.update({
       data: {
         basicAuths: {
           update: {
-            password: newPassword,
+            password: hashedPassword,
           },
         },
       },
