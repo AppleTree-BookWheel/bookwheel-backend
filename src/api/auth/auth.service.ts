@@ -11,6 +11,8 @@ import { CreateCodeDto } from './dto/request/create-code.dto';
 import { UserRepository } from '../user/user.repository';
 import { CreateUserInput } from './inputs/create-user.input';
 import * as HashUtil from '../../utils/hash.util';
+import { LoginInput } from './inputs/login.input';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,7 @@ export class AuthService {
     private readonly mailerService: MailerService,
     private readonly redisService: RedisService,
     private readonly userRepository: UserRepository,
+    private readonly jwtService: JwtService,
   ) {}
 
   // TODO : Transaction 처리 / User 존재 여부 확인 추가
@@ -89,5 +92,24 @@ export class AuthService {
         password: hashedPassword,
       },
     });
+  }
+
+  public async login(input: LoginInput): Promise<{ accessToken: string }> {
+    const user = await this.userRepository.selectUserById(input.id);
+    if (!user || !user.basicAuths) {
+      throw new NotFoundException('Invalid Id');
+    }
+
+    const isPasswordValid = await HashUtil.comparePassword(
+      input.password,
+      user.basicAuths.password,
+    );
+    if (!isPasswordValid) {
+      throw new BadRequestException('Invalid password.');
+    }
+
+    return {
+      accessToken: await this.jwtService.signAsync({ userIdx: user.idx }),
+    };
   }
 }
