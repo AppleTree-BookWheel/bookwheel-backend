@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { RedisService } from 'src/redis/redis.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
@@ -13,6 +14,7 @@ export class LoginTokenService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly redisService: RedisService,
   ) {
     const config = this.configService.get('loginJwt');
 
@@ -29,6 +31,8 @@ export class LoginTokenService {
       this.issueAccessToken(idx, refreshTokenId),
       this.issueRefreshToken(idx, refreshTokenId),
     ]);
+
+    await this.saveRefreshToken(refreshTokenId, idx);
 
     return {
       accessToken,
@@ -58,5 +62,15 @@ export class LoginTokenService {
       secret: this.REFRESH_SECRET,
       expiresIn: `${this.REFRESH_TOKEN_EXPIRES_IN}d`,
     });
+  }
+
+  private async saveRefreshToken(refreshTokenId: string, idx: number) {
+    const seconds = this.REFRESH_TOKEN_EXPIRES_IN * 24 * 60 * 60;
+
+    await this.redisService.set(
+      `refreshToken:${refreshTokenId}`,
+      idx.toString(),
+      seconds,
+    );
   }
 }
