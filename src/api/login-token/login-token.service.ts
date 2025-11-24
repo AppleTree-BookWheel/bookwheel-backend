@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class LoginTokenService {
@@ -21,6 +22,20 @@ export class LoginTokenService {
     this.REFRESH_SECRET = config.refreshSecret;
   }
 
+  public async issueTokenSet(idx: number) {
+    const refreshTokenId = uuidv4();
+
+    const [accessToekn, refreshToken] = await Promise.all([
+      this.issueAccessToken(idx, refreshTokenId),
+      this.issueRefreshToken(idx, refreshTokenId),
+    ]);
+
+    return {
+      accessToekn,
+      refreshToken,
+      refreshTokenId,
+    };
+  }
   private async issueAccessToken(idx: number, refreshTokenId: string) {
     const payload = {
       idx,
