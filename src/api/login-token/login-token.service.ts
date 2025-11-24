@@ -40,6 +40,18 @@ export class LoginTokenService {
       refreshTokenId,
     };
   }
+
+  public async validateRefreshToken(refreshTokenId: string, idx: number) {
+    const key = `refreshToken:${refreshTokenId}`;
+    const storedIdx = await this.redisService.get(key);
+
+    if (!storedIdx || storedIdx !== idx.toString()) {
+      return false;
+    }
+
+    return true;
+  }
+
   private async issueAccessToken(idx: number, refreshTokenId: string) {
     const payload = {
       idx,
