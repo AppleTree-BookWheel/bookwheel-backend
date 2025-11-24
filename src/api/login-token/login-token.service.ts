@@ -25,13 +25,13 @@ export class LoginTokenService {
   public async issueTokenSet(idx: number) {
     const refreshTokenId = uuidv4();
 
-    const [accessToekn, refreshToken] = await Promise.all([
+    const [accessToken, refreshToken] = await Promise.all([
       this.issueAccessToken(idx, refreshTokenId),
       this.issueRefreshToken(idx, refreshTokenId),
     ]);
 
     return {
-      accessToekn,
+      accessToken,
       refreshToken,
       refreshTokenId,
     };
