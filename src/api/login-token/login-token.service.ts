@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { randomUUID } from 'crypto';
 import { RedisService } from 'src/redis/redis.service';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class LoginTokenService {
@@ -25,7 +25,7 @@ export class LoginTokenService {
   }
 
   public async issueTokenSet(idx: number) {
-    const refreshTokenId = uuidv4();
+    const refreshTokenId = randomUUID();
 
     const [accessToken, refreshToken] = await Promise.all([
       this.issueAccessToken(idx, refreshTokenId),
@@ -50,6 +50,12 @@ export class LoginTokenService {
     }
 
     return true;
+  }
+
+  public async reissueRefreshToken(refreshTokenId: string, idx: number) {
+    await this.redisService.del(`refreshToken:${refreshTokenId}`);
+
+    return this.issueTokenSet(idx);
   }
 
   private async issueAccessToken(idx: number, refreshTokenId: string) {
