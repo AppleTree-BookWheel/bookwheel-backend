@@ -13,6 +13,8 @@ import { CreateUserInput } from './inputs/create-user.input';
 import * as HashUtil from '../../utils/hash.util';
 import { LoginInput } from './inputs/login.input';
 import { JwtService } from '@nestjs/jwt';
+import { LoginTokenService } from '../login-token/login-token.service';
+import { ReissueTokenSetInput } from './inputs/reissue-token-set.input';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +23,7 @@ export class AuthService {
     private readonly redisService: RedisService,
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
+    private readonly loginTokenService: LoginTokenService,
   ) {}
 
   // TODO : Transaction 처리 / User 존재 여부 확인 추가
@@ -111,5 +114,12 @@ export class AuthService {
     return {
       accessToken: await this.jwtService.signAsync({ userIdx: user.idx }),
     };
+  }
+
+  public async reissueTokenSet(input: ReissueTokenSetInput) {
+    return this.loginTokenService.reissueRefreshToken(
+      input.refreshTokenId,
+      input.idx,
+    );
   }
 }
