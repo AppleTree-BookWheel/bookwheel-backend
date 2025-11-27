@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Post,
+  Res,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -16,6 +17,8 @@ import { ReissueTokenSetResponseDto } from './dto/response/reissue-token-set-res
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import type { Response } from 'express';
+import cookieOption from 'src/config/cookie.config';
 
 @Controller('auth')
 export class AuthController {
@@ -49,24 +52,45 @@ export class AuthController {
 
   @Post('login')
   @UsePipes(ValidationPipe)
-  public async login(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
-    return await this.authService.login(loginDto);
+  public async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<LoginResponseDto> {
+    const tokenSet = await this.authService.login(loginDto);
+
+    res.cookie('refreshToken', tokenSet.refreshToken, cookieOption());
+
+    return {
+      accessToken: tokenSet.accessToken,
+    };
   }
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  public async logout(@User() user): Promise<void> {
-    return await this.authService.logout(user.idx);
+  public async logout(
+    @User() user,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    await this.authService.logout(user.refreshTokenId);
+
+    res.clearCookie('refreshToken', cookieOption());
   }
 
   @Post('refresh')
   @UseGuards(JwtRefreshGuard)
   public async reissueTokens(
     @User() user,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<ReissueTokenSetResponseDto> {
-    return await this.authService.reissueTokenSet({
+    const tokenSet = await this.authService.reissueTokenSet({
       refreshTokenId: user.refreshTokenId,
       idx: user.idx,
     });
+
+    res.cookie('refreshToken', tokenSet.refreshToken, cookieOption());
+
+    return {
+      accessToken: tokenSet.accessToken,
+    };
   }
 }
