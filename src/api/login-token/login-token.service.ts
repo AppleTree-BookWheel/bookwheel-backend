@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
 import { RedisService } from 'src/redis/redis.service';
+import { TokenSet } from './model/token-set.model';
 
 @Injectable()
 export class LoginTokenService {
@@ -24,7 +25,7 @@ export class LoginTokenService {
     this.REFRESH_SECRET = config.refreshSecret;
   }
 
-  public async issueTokenSet(idx: number) {
+  public async issueTokenSet(idx: number): Promise<TokenSet> {
     const refreshTokenId = randomUUID();
 
     const [accessToken, refreshToken] = await Promise.all([
@@ -41,7 +42,10 @@ export class LoginTokenService {
     };
   }
 
-  public async validateRefreshToken(refreshTokenId: string, idx: number) {
+  public async validateRefreshToken(
+    refreshTokenId: string,
+    idx: number,
+  ): Promise<boolean> {
     const key = `refreshToken:${refreshTokenId}`;
     const storedIdx = await this.redisService.get(key);
 
@@ -52,13 +56,23 @@ export class LoginTokenService {
     return true;
   }
 
-  public async reissueRefreshToken(refreshTokenId: string, idx: number) {
+  public async reissueRefreshToken(
+    refreshTokenId: string,
+    idx: number,
+  ): Promise<TokenSet> {
     await this.redisService.del(`refreshToken:${refreshTokenId}`);
 
     return this.issueTokenSet(idx);
   }
 
-  private async issueAccessToken(idx: number, refreshTokenId: string) {
+  public async deleteRefreshToken(refreshTokenId: string): Promise<void> {
+    await this.redisService.del(`refreshToken:${refreshTokenId}`);
+  }
+
+  private async issueAccessToken(
+    idx: number,
+    refreshTokenId: string,
+  ): Promise<string> {
     const payload = {
       idx,
       refreshTokenId,
@@ -70,7 +84,10 @@ export class LoginTokenService {
     });
   }
 
-  private async issueRefreshToken(idx: number, refreshTokenId: string) {
+  private async issueRefreshToken(
+    idx: number,
+    refreshTokenId: string,
+  ): Promise<string> {
     const payload = {
       idx,
       refreshTokenId,
@@ -82,13 +99,16 @@ export class LoginTokenService {
     });
   }
 
-  private async saveRefreshToken(refreshTokenId: string, idx: number) {
-    const seconds = this.REFRESH_TOKEN_EXPIRES_IN * 24 * 60 * 60;
+  private async saveRefreshToken(
+    refreshTokenId: string,
+    idx: number,
+  ): Promise<void> {
+    const time = this.REFRESH_TOKEN_EXPIRES_IN * 24 * 60 * 60;
 
     await this.redisService.set(
       `refreshToken:${refreshTokenId}`,
       idx.toString(),
-      seconds,
+      time,
     );
   }
 }
