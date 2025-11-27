@@ -6,6 +6,8 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 export class UserBasicDto {
   /**
    * 로그인 ID
+   *
+   * @example "user123"
    */
   @IsNotEmpty()
   @IsString()
@@ -13,6 +15,8 @@ export class UserBasicDto {
 
   /**
    * 비밀번호
+   *
+   * @example "securePassword!"
    */
   @IsNotEmpty()
   @IsString()
@@ -20,6 +24,8 @@ export class UserBasicDto {
 
   /**
    * 이메일 주소
+   *
+   * @example "bookwheel@naver.com"
    */
   @IsNotEmpty()
   @IsEmail()
