@@ -117,6 +117,10 @@ export class AuthService {
     };
   }
 
+  public async logout(refreshTokenId: string): Promise<void> {
+    await this.loginTokenService.deleteRefreshToken(refreshTokenId);
+  }
+
   public async reissueTokenSet(input: ReissueTokenSetInput) {
     return this.loginTokenService.reissueRefreshToken(
       input.refreshTokenId,
