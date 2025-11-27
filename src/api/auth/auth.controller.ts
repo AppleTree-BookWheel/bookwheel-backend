@@ -15,6 +15,7 @@ import { LoginResponseDto } from './dto/response/login-response.dto';
 import { ReissueTokenSetResponseDto } from './dto/response/reissue-token-set-response.dto';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { User } from 'src/common/decorators/user.decorator';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -50,6 +51,12 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   public async login(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
     return await this.authService.login(loginDto);
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  public async logout(@User() user): Promise<void> {
+    return await this.authService.logout(user.idx);
   }
 
   @Post('refresh')
