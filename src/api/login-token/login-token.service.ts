@@ -109,7 +109,7 @@ export class LoginTokenService {
       `refreshToken:${refreshTokenId}`,
       idx.toString(),
       'EX',
-      seconds,
+      time,
     );
   }
 }
