@@ -15,6 +15,7 @@ import { ReissueTokenSetInput } from './inputs/reissue-token-set.input';
 import { SendVerificationEmailInput } from './inputs/send-verification-email.input';
 import { CreateCodeInput } from './inputs/create-code.input';
 import { VerifyCodeInput } from './inputs/verify-code.input';
+import { TokenSet } from './model/token-set.model';
 
 @Injectable()
 export class AuthService {
@@ -98,7 +99,7 @@ export class AuthService {
     });
   }
 
-  public async login(input: LoginInput): Promise<{ accessToken: string }> {
+  public async login(input: LoginInput): Promise<TokenSet> {
     const user = await this.userRepository.selectUserById(input.id);
     if (!user || !user.basicAuths) {
       throw new NotFoundException('Invalid Id');
@@ -112,9 +113,7 @@ export class AuthService {
       throw new BadRequestException('Invalid password.');
     }
 
-    return {
-      accessToken: await this.jwtService.signAsync({ userIdx: user.idx }),
-    };
+    return this.loginTokenService.issueTokenSet(user.idx);
   }
 
   public async logout(refreshTokenId: string): Promise<void> {
