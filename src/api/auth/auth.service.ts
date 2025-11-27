@@ -5,9 +5,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { RedisService } from 'src/redis/redis.service';
-import { SendVerificationEmailDto } from './dto/request/send-verification-email.dto';
-import { VerifyCodeDto } from './dto/request/verify-code.dto';
-import { CreateCodeDto } from './dto/request/create-code.dto';
 import { UserRepository } from '../user/user.repository';
 import { CreateUserInput } from './inputs/create-user.input';
 import * as HashUtil from '../../utils/hash.util';
@@ -15,6 +12,9 @@ import { LoginInput } from './inputs/login.input';
 import { JwtService } from '@nestjs/jwt';
 import { LoginTokenService } from '../login-token/login-token.service';
 import { ReissueTokenSetInput } from './inputs/reissue-token-set.input';
+import { SendVerificationEmailInput } from './inputs/send-verification-email.input';
+import { CreateCodeInput } from './inputs/create-code.input';
+import { VerifyCodeInput } from './inputs/verify-code.input';
 
 @Injectable()
 export class AuthService {
@@ -27,35 +27,36 @@ export class AuthService {
   ) {}
 
   // TODO : Transaction 처리 / User 존재 여부 확인 추가
+
   public async sendVerificationEmail(
-    sendVerificationEmailDto: SendVerificationEmailDto,
+    sendVerificationEmailInput: SendVerificationEmailInput,
   ): Promise<void> {
     const verificationCode = Math.floor(
       100000 + Math.random() * 900000,
     ).toString();
 
     await this.createCode({
-      email: sendVerificationEmailDto.email,
+      email: sendVerificationEmailInput.email,
       code: verificationCode,
     });
 
     await this.mailerService.sendMail({
-      to: sendVerificationEmailDto.email,
+      to: sendVerificationEmailInput.email,
       subject: '책바퀴 이메일 인증 코드',
       template: './verification',
       context: { verificationCode },
     });
   }
 
-  public async createCode(createCodeDto: CreateCodeDto): Promise<void> {
-    const redisKey = `email_verification:${createCodeDto.email}`;
+  public async createCode(createCodeInput: CreateCodeInput): Promise<void> {
+    const redisKey = `email_verification:${createCodeInput.email}`;
     const ttl = 5 * 60; // 유효기간 5분
-    await this.redisService.set(redisKey, createCodeDto.code, 'EX', ttl);
+    await this.redisService.set(redisKey, createCodeInput.code, 'EX', ttl);
   }
 
-  public async verifyCode(verifyCodeDto: VerifyCodeDto): Promise<void> {
+  public async verifyCode(verifyCodeInput: VerifyCodeInput): Promise<void> {
     const storedCode = await this.redisService.get(
-      `email_verification:${verifyCodeDto.email}`,
+      `email_verification:${verifyCodeInput.email}`,
     );
 
     if (!storedCode) {
@@ -64,11 +65,11 @@ export class AuthService {
       );
     }
 
-    if (storedCode !== verifyCodeDto.code) {
+    if (storedCode !== verifyCodeInput.code) {
       throw new BadRequestException('인증 코드가 일치하지 않습니다.');
     }
 
-    await this.redisService.del(`email_verification:${verifyCodeDto.email}`);
+    await this.redisService.del(`email_verification:${verifyCodeInput.email}`);
   }
 
   public async checkDuplicateId(id: string): Promise<boolean> {
