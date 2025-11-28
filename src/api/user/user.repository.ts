@@ -87,6 +87,8 @@ export class UserRepository {
       data: {
         nickname: input.nickname,
         profileImagePath: input.profileImagePath,
+        age: input.age,
+        gender: input.gender,
       },
       where: { idx, deletedAt: null },
     });
@@ -114,6 +116,10 @@ export class UserRepository {
         deletedAt: new Date(),
       },
       where: { idx, deletedAt: null },
+    });
+
+    await this.txHost.tx.userBasic.delete({
+      where: { userIdx: idx },
     });
   }
 }
