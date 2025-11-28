@@ -1,54 +1,57 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
-  Param,
-  ParseIntPipe,
   Patch,
+  Post,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { GetUserResponseDto } from './dto/response/get-user-response.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
 import { UpdatePasswordDto } from './dto/request/update-password.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { User } from 'src/common/decorators/user.decorator';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('id/:id')
+  @Post('id')
   async getUserById(
-    @Param('id') id: string,
+    @Body('id') id: string,
   ): Promise<GetUserResponseDto | null> {
     return this.userService.getUserById(id);
   }
 
-  @Get('/:idx')
-  async getUserByIdx(
-    @Param('idx', ParseIntPipe) idx: number,
-  ): Promise<GetUserResponseDto> {
-    return this.userService.getUserByIdx(idx);
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async getUserByIdx(@User() user): Promise<GetUserResponseDto> {
+    return this.userService.getUserByIdx(user.idx);
   }
 
-  @Patch('/:idx')
+  @Patch()
+  @UseGuards(JwtAuthGuard)
   async updateUserByIdx(
-    @Param('idx', ParseIntPipe) idx: number,
-    updateUserDto: UpdateUserDto,
+    @User() user,
+    @Body() updateUserDto: UpdateUserDto,
   ): Promise<void> {
-    return this.userService.updateUserByIdx(idx, updateUserDto);
+    return this.userService.updateUserByIdx(user.idx, updateUserDto);
   }
 
-  @Patch('/:idx/password')
+  @Patch('password')
+  @UseGuards(JwtAuthGuard)
   async updatePasswordByIdx(
-    @Param('idx', ParseIntPipe) idx: number,
-    updatePasswordDto: UpdatePasswordDto,
+    @User() user,
+    @Body() updatePasswordDto: UpdatePasswordDto,
   ): Promise<void> {
-    return this.userService.updatePasswordByIdx(idx, updatePasswordDto);
+    return this.userService.updatePasswordByIdx(user.idx, updatePasswordDto);
   }
 
-  @Delete('/:idx')
-  async deleteUserByIdx(
-    @Param('idx', ParseIntPipe) idx: number,
-  ): Promise<void> {
-    return this.userService.deleteUserByIdx(idx);
+  @Delete()
+  @UseGuards(JwtAuthGuard)
+  async deleteUserByIdx(@User() user): Promise<void> {
+    return this.userService.deleteUserByIdx(user.idx);
   }
 }
