@@ -16,7 +16,7 @@ export class mailerConfig implements MailerAsyncOptions {
       from: '"AppleTree" <bookWheel@gmail.com>',
     },
     template: {
-      dir: path.join(__dirname, '/../auth/templates'),
+      dir: path.join(process.cwd(), 'dist/api/auth/templates'),
       adapter: new EjsAdapter(),
       options: {
         strict: false,
