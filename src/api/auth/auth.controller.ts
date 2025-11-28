@@ -40,7 +40,9 @@ export class AuthController {
 
   @Post('check-duplicate-id')
   @UsePipes(ValidationPipe)
-  public async checkDuplicateId(@Body() id: string): Promise<boolean> {
+  public async checkDuplicateId(
+    @Body('id') id: string,
+  ): Promise<{ isAvailable: boolean }> {
     return await this.authService.checkDuplicateId(id);
   }
 
