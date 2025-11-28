@@ -73,9 +73,11 @@ export class AuthService {
     await this.redisService.del(`email_verification:${verifyCodeInput.email}`);
   }
 
-  public async checkDuplicateId(id: string): Promise<boolean> {
-    const user = this.userRepository.selectUserById(id);
-    return !user; // 존재하지 않으면 true 반환 (사용가능)
+  public async checkDuplicateId(id: string): Promise<{ isAvailable: boolean }> {
+    const user = await this.userRepository.selectUserById(id);
+    return {
+      isAvailable: !user, // 존재하지 않으면 true 반환 (사용가능)
+    };
   }
 
   public async signUp(input: CreateUserInput): Promise<void> {
