@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { UserModel } from './model/user.model';
 import { CreateUserInput } from './inputs/create-user.input';
@@ -25,7 +29,7 @@ export class UserService {
     const user = await this.userRepository.selectUserByIdx(idx);
 
     if (!user) {
-      throw new Error(`User with idx ${idx} not found`);
+      throw new NotFoundException(`User with idx ${idx} not found`);
     }
 
     return UserModel.fromPrisma(user);
@@ -50,7 +54,9 @@ export class UserService {
   ): Promise<void> {
     const currentHash = await this.userRepository.selectPasswordByIdx(idx);
     if (!currentHash) {
-      throw new Error(`Password for user with idx ${idx} not found`);
+      throw new NotFoundException(
+        `Password for user with idx ${idx} not found`,
+      );
     }
 
     const isMatch = await HashUtil.comparePassword(
@@ -59,7 +65,7 @@ export class UserService {
     );
 
     if (!isMatch) {
-      throw new Error('Invalid current password.');
+      throw new BadRequestException('Invalid current password.');
     }
 
     const newHashedPassword = await HashUtil.hashPassword(input.newPassword);
