@@ -15,15 +15,19 @@ export class JwtRefreshStrategy extends PassportStrategy(
     private readonly loginTokenService: LoginTokenService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request) => {
+          return request?.cookies?.refreshToken;
+        },
+      ]),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('loginJwt.refreshSecret')!,
       passReqToCallback: true,
     });
   }
 
-  async validate(req: Request, payload) {
-    const refreshToken = req.get('Authorization')?.replace('Bearer', '').trim();
+  async validate(req: Request, payload: any) {
+    const refreshToken = req.cookies?.refreshToken;
 
     if (!refreshToken) {
       throw new UnauthorizedException('No refresh token provided');
@@ -35,7 +39,9 @@ export class JwtRefreshStrategy extends PassportStrategy(
     );
 
     if (!isValid) {
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new UnauthorizedException(
+        'Invalid refresh token (Logout or Expired)',
+      );
     }
 
     return { idx: payload.idx, refreshTokenId: payload.refreshTokenId };
