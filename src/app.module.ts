@@ -11,6 +11,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { SurveyModule } from './api/survey/survey.module';
 import { UserModule } from './api/user/user.module';
 import { LoginTokenModule } from './api/login-token/login-token.module';
+import { AuthModule } from './api/auth/auth.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { LoginTokenModule } from './api/login-token/login-token.module';
     }),
     UserModule,
     LoginTokenModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
