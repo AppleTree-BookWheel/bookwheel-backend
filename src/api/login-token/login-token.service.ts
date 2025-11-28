@@ -108,6 +108,7 @@ export class LoginTokenService {
     await this.redisService.set(
       `refreshToken:${refreshTokenId}`,
       idx.toString(),
+      'EX',
       time,
     );
   }

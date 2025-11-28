@@ -5,6 +5,7 @@ export const SELECT_USER_BASIC =
     select: {
       id: true,
       email: true,
+      password: true,
     },
   });
 
