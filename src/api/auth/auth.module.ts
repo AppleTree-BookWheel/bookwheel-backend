@@ -5,9 +5,15 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { mailerConfig } from 'src/config/mailer.config';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { LoginTokenModule } from '../login-token/login-token.module';
+import { UserModule } from '../user/user.module';
+import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
   imports: [
+    UserModule,
+    LoginTokenModule,
+    RedisModule,
     MailerModule.forRootAsync(new mailerConfig()),
     JwtModule.registerAsync({
       imports: [ConfigModule],
