@@ -18,6 +18,7 @@ import { User } from 'src/common/decorators/user.decorator';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // 로그인시 사용
   @Post('id')
   async getUserById(
     @Body('id') id: string,
@@ -27,13 +28,13 @@ export class UserController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getUserByIdx(@User() user): Promise<GetUserResponseDto> {
+  async getMyInfo(@User() user): Promise<GetUserResponseDto> {
     return this.userService.getUserByIdx(user.idx);
   }
 
   @Patch()
   @UseGuards(JwtAuthGuard)
-  async updateUserByIdx(
+  async updateMyInfo(
     @User() user,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<void> {
@@ -42,7 +43,7 @@ export class UserController {
 
   @Patch('password')
   @UseGuards(JwtAuthGuard)
-  async updatePasswordByIdx(
+  async updateMyPassword(
     @User() user,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ): Promise<void> {
