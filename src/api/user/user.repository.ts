@@ -4,6 +4,10 @@ import { Injectable } from '@nestjs/common';
 import { SELECT_USER, SelectUser } from './model/prisma-type/select-user';
 import { CreateUserInput } from './inputs/create-user.input';
 import { UpdateUserInput } from './inputs/update-user.input';
+import {
+  SELECT_PUBLIC_USER,
+  SelectPublicUser,
+} from './model/prisma-type/select-public-user';
 
 @Injectable()
 export class UserRepository {
@@ -14,6 +18,22 @@ export class UserRepository {
   public async selectUserById(id: string): Promise<SelectUser | null> {
     return await this.txHost.tx.user.findFirst({
       ...SELECT_USER,
+      where: {
+        deletedAt: null,
+        basicAuths: {
+          is: {
+            id: id,
+          },
+        },
+      },
+    });
+  }
+
+  public async selectPublicUserById(
+    id: string,
+  ): Promise<SelectPublicUser | null> {
+    return await this.txHost.tx.user.findFirst({
+      ...SELECT_PUBLIC_USER,
       where: {
         deletedAt: null,
         basicAuths: {

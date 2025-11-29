@@ -13,27 +13,38 @@ import { UpdateUserDto } from './dto/request/update-user.dto';
 import { UpdatePasswordDto } from './dto/request/update-password.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from 'src/common/decorators/user.decorator';
+import { GetPublicUserResponseDto } from './dto/response/get-public-user-response.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('id')
+  // 로그인, id 중복 검사시 사용
+  @Get('id')
   async getUserById(
     @Body('id') id: string,
   ): Promise<GetUserResponseDto | null> {
     return this.userService.getUserById(id);
   }
 
+  // id로 친구 검색시 사용
+  @Get('search')
+  @UseGuards(JwtAuthGuard)
+  async getPublicUserById(
+    @Body('id') id: string,
+  ): Promise<GetPublicUserResponseDto | null> {
+    return this.userService.getPublicUserById(id);
+  }
+
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getUserByIdx(@User() user): Promise<GetUserResponseDto> {
+  async getMyInfo(@User() user): Promise<GetUserResponseDto> {
     return this.userService.getUserByIdx(user.idx);
   }
 
   @Patch()
   @UseGuards(JwtAuthGuard)
-  async updateUserByIdx(
+  async updateMyInfo(
     @User() user,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<void> {
@@ -42,7 +53,7 @@ export class UserController {
 
   @Patch('password')
   @UseGuards(JwtAuthGuard)
-  async updatePasswordByIdx(
+  async updateMyPassword(
     @User() user,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ): Promise<void> {

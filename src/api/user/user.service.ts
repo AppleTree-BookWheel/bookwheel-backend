@@ -9,12 +9,13 @@ import { CreateUserInput } from './inputs/create-user.input';
 import { UpdateUserInput } from './inputs/update-user.input';
 import { UpdatePasswordInput } from './inputs/update-password.input';
 import * as HashUtil from '../../utils/hash.util';
+import { PublicUserModel } from './model/public-user.model';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  // id 중복 검사를 위한 메서드
+  // id 중복 검사, 로그인을 위한 메서드
   public async getUserById(id: string): Promise<UserModel | null> {
     const user = await this.userRepository.selectUserById(id);
 
@@ -25,6 +26,17 @@ export class UserService {
     return UserModel.fromPrisma(user);
   }
 
+  // 친구 검색을 위한 메서드
+  public async getPublicUserById(id: string): Promise<PublicUserModel | null> {
+    const user = await this.userRepository.selectPublicUserById(id);
+
+    if (!user) {
+      return null;
+    }
+
+    return PublicUserModel.fromPrisma(user);
+  }
+
   public async getUserByIdx(idx: number): Promise<UserModel> {
     const user = await this.userRepository.selectUserByIdx(idx);
 
@@ -33,12 +45,6 @@ export class UserService {
     }
 
     return UserModel.fromPrisma(user);
-  }
-
-  public async createUser(input: CreateUserInput): Promise<UserModel> {
-    return await this.userRepository
-      .insertUser(input)
-      .then(UserModel.fromPrisma);
   }
 
   public async updateUserByIdx(
