@@ -27,16 +27,16 @@ export class SurveyService {
 
   public async createSurveyResponse(
     idx: number,
-    input: CreateSurveyResponseInput,
+    inputs: CreateSurveyResponseInput[],
   ): Promise<void> {
-    return this.surveyRepository.insertSurveyResponse(idx, input);
+    return this.surveyRepository.insertSurveyResponse(idx, inputs);
   }
 
   public async updateSurveyResponse(
     idx: number,
-    input: UpdateSurveyResponseInput,
+    inputs: UpdateSurveyResponseInput[],
   ): Promise<void> {
-    return this.surveyRepository.updateSurveyResponse(idx, input);
+    return this.surveyRepository.updateSurveyResponse(idx, inputs);
   }
 
   public async deleteSurveyResponse(
