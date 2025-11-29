@@ -35,12 +35,6 @@ export class UserService {
     return UserModel.fromPrisma(user);
   }
 
-  public async createUser(input: CreateUserInput): Promise<UserModel> {
-    return await this.userRepository
-      .insertUser(input)
-      .then(UserModel.fromPrisma);
-  }
-
   public async updateUserByIdx(
     idx: number,
     input: UpdateUserInput,
