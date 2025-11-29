@@ -1,4 +1,3 @@
-import { QuestionType } from '../constants/survey-question.enum';
 import { SelectSurveyResponse } from './prisma-type/select-survey-response'; // 💡 Repository의 Payload 타입 Import
 
 export class SurveyResponseModel {
@@ -7,7 +6,7 @@ export class SurveyResponseModel {
    *
    * @example 1
    */
-  questionIdx: QuestionType;
+  questionIdx: number;
 
   /**
    * 선택된 옵션 배열
@@ -29,7 +28,7 @@ export class SurveyResponseModel {
 
     const optionIds = responses.map((response) => response.optionIdx);
 
-    const questionIdx = responses[0].questionIdx;
+    const questionIdx = responses[0].option.questionIdx;
 
     return new SurveyResponseModel({
       questionIdx: questionIdx,
