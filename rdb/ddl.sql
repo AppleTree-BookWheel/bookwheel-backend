@@ -150,7 +150,6 @@ CREATE TABLE "survey_response_tb" (
   "idx"          SERIAL      PRIMARY KEY,
   "user_idx"     INTEGER      NOT NULL,
   "option_idx"   INTEGER      NOT NULL,
-  "question_idx" INTEGER      NOT NULL,
   "created_at"   TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "deleted_at"   TIMESTAMP(3),
   UNIQUE ("user_idx", "option_idx") 
@@ -190,7 +189,6 @@ ALTER TABLE "user_social_tb" ADD CONSTRAINT "FK_user_social_tb_user_idx" FOREIGN
 -- Survey FKs
 ALTER TABLE "survey_option_tb" ADD CONSTRAINT "FK_survey_option_tb_question_idx" FOREIGN KEY ("question_idx") REFERENCES "survey_question_tb" ("idx");
 ALTER TABLE "survey_response_tb" ADD CONSTRAINT "FK_survey_response_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
-ALTER TABLE "survey_response_tb" ADD CONSTRAINT "FK_survey_response_tb_question_idx" FOREIGN KEY ("question_idx") REFERENCES "survey_question_tb" ("idx");
 ALTER TABLE "survey_response_tb" ADD CONSTRAINT "FK_survey_response_tb_option_idx" FOREIGN KEY ("option_idx") REFERENCES "survey_option_tb" ("idx");
 ALTER TABLE "survey_option_tb" ADD CONSTRAINT "FK_survey_option_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
 
