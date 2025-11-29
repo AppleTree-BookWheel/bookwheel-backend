@@ -1,12 +1,10 @@
-import { QuestionType } from '../../constants/survey-question.enum';
-
 export class GetSurveyResponseOutDto {
   /**
    * 질문 idx
    *
    * @example 1
    */
-  questionIdx: QuestionType;
+  questionIdx: number;
 
   /**
    * 선택된 옵션 배열

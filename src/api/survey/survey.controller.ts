@@ -3,49 +3,63 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
+  ParseArrayPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { SurveyService } from './survey.service';
 import { CreateSurveyResponseDto } from './dto/request/create-survey-response.dto';
 import { GetSurveyResponseOutDto } from './dto/response/get-survey-response.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { User } from 'src/common/decorators/user.decorator';
+import { UpdateSurveyResponseDto } from './dto/request/update-survey-response.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('survey')
 export class SurveyController {
   constructor(private readonly surveyService: SurveyService) {}
 
-  // TODO : 토큰 구현후 userIdx 받는 방식 변경 / 유효성 검사 추가
-
-  @Get('/response/:idx')
+  @Get('/response')
   async getSurveyResponseByQuestionIdx(
-    @Param('idx') idx: number,
+    @User() user,
     @Body('questionIdx') questionIdx: number,
   ): Promise<GetSurveyResponseOutDto | null> {
-    return this.surveyService.getSurveyResponseByQuestionIdx(idx, questionIdx);
+    return this.surveyService.getSurveyResponseByQuestionIdx(
+      user.idx,
+      questionIdx,
+    );
   }
 
-  @Post('/response/:idx')
+  @Post('/response')
   async createSurveyResponse(
-    @Param('idx') idx: number,
-    @Body() createSurveyResponseDto: CreateSurveyResponseDto,
+    @User() user,
+    @Body(new ParseArrayPipe({ items: CreateSurveyResponseDto }))
+    createSurveyResponseDto: CreateSurveyResponseDto[],
   ): Promise<void> {
-    await this.surveyService.createSurveyResponse(idx, createSurveyResponseDto);
+    await this.surveyService.createSurveyResponse(
+      user.idx,
+      createSurveyResponseDto,
+    );
   }
 
-  @Put('/response/:idx')
+  @Put('/response')
   async updateSurveyResponse(
-    @Param('idx') idx: number,
-    @Body() updateSurveyResponseDto: CreateSurveyResponseDto,
+    @User() user,
+    @Body(new ParseArrayPipe({ items: CreateSurveyResponseDto }))
+    updateSurveyResponseDto: UpdateSurveyResponseDto[],
   ): Promise<void> {
-    await this.surveyService.updateSurveyResponse(idx, updateSurveyResponseDto);
+    await this.surveyService.updateSurveyResponse(
+      user.idx,
+      updateSurveyResponseDto,
+    );
   }
 
-  @Delete('/response/:idx')
+  @Delete('/response')
   async deleteSurveyResponse(
-    @Param('idx') idx: number,
+    @User() user,
     @Body('questionIdx') questionIdx: number,
   ): Promise<void> {
-    await this.surveyService.deleteSurveyResponse(idx, questionIdx);
+    await this.surveyService.deleteSurveyResponse(user.idx, questionIdx);
   }
 }

@@ -254,7 +254,6 @@ model SurveyQuestion {
   content String? @db.VarChar(255)
 
   options   SurveyOption[]
-  responses SurveyResponse[]
 
   @@map("survey_question_tb")
 }
@@ -273,20 +272,17 @@ model SurveyOption {
 }
 
 model SurveyResponse {
-  idx         Int       @default(autoincrement())
+  idx         Int       @id @default(autoincrement())
   userIdx     Int       @map("user_idx")
   optionIdx   Int       @map("option_idx")
-  questionIdx Int       @map("question_idx")
   createdAt   DateTime  @default(now()) @map("created_at")
   deletedAt   DateTime? @map("deleted_at")
 
-
   user     User           @relation("SurveyResponseUser", fields: [userIdx], references: [idx])
   option   SurveyOption   @relation(fields: [optionIdx], references: [idx])
-  question SurveyQuestion @relation(fields: [questionIdx], references: [idx])
 
-  @@id([idx, userIdx, optionIdx])
-  @@map("survey_response_tb")
+@@unique([userIdx, optionIdx])
+@@map("survey_response_tb")
 }
 
 model ToRead {

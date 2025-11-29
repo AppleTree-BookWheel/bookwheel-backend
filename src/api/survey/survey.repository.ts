@@ -22,45 +22,58 @@ export class SurveyRepository {
       ...SELECT_SURVEY_RESPONSE,
       where: {
         userIdx: idx,
-        questionIdx: questionIdx,
         deletedAt: null,
+        option: {
+          questionIdx: questionIdx,
+        },
       },
     });
   }
 
-  // insert는 한 번에 여러 질문의 답변(optionIdx)을 넣을 수 있도록 구현
   public async insertSurveyResponse(
-    idx: number,
-    input: CreateSurveyResponseInput,
+    userIdx: number,
+    inputs: CreateSurveyResponseInput[],
   ): Promise<void> {
-    const { questionIdx, optionIdx } = input;
-    const validOptionIdx = optionIdx || [];
+    const responseData = inputs.flatMap((input) => {
+      const { optionIdx } = input;
+      const validOptionIdx = optionIdx || [];
 
-    const responseData = validOptionIdx.map((optionId) => ({
-      userIdx: idx,
-      questionIdx: questionIdx,
-      optionIdx: optionId,
-    }));
-
-    await this.txHost.tx.surveyResponse.createMany({
-      data: responseData,
+      return validOptionIdx.map((optionId) => ({
+        userIdx: userIdx,
+        optionIdx: optionId,
+      }));
     });
+
+    if (responseData.length > 0) {
+      await this.txHost.tx.surveyResponse.createMany({
+        data: responseData,
+        skipDuplicates: true,
+      });
+    }
   }
 
   public async updateSurveyResponse(
-    idx: number,
-    input: UpdateSurveyResponseInput,
+    userIdx: number,
+    inputs: UpdateSurveyResponseInput[],
   ): Promise<void> {
-    const { questionIdx, optionIdx } = input;
+    const questionIdxList = inputs.map((input) => input.questionIdx);
 
-    await this.txHost.tx.surveyResponse.deleteMany({
-      where: {
-        userIdx: idx,
-        questionIdx: questionIdx,
-      },
-    });
+    if (questionIdxList.length > 0) {
+      await this.txHost.tx.surveyResponse.deleteMany({
+        where: {
+          userIdx: userIdx,
+          option: {
+            questionIdx: {
+              in: questionIdxList,
+            },
+          },
+        },
+      });
+    }
 
-    await this.insertSurveyResponse(idx, input);
+    if (inputs.length > 0) {
+      await this.insertSurveyResponse(userIdx, inputs);
+    }
   }
 
   public async deleteSurveyResponse(
@@ -70,8 +83,10 @@ export class SurveyRepository {
     await this.txHost.tx.surveyResponse.deleteMany({
       where: {
         userIdx: idx,
-        questionIdx: questionIdx,
         deletedAt: null,
+        option: {
+          questionIdx: questionIdx,
+        },
       },
     });
   }

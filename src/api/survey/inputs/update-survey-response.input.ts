@@ -1,6 +1,4 @@
-import { QuestionType } from '../constants/survey-question.enum';
-
 export class UpdateSurveyResponseInput {
-  questionIdx: QuestionType;
+  questionIdx: number;
   optionIdx?: number[];
 }
