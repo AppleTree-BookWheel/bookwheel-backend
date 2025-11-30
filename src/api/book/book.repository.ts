@@ -46,4 +46,19 @@ export class BookRepository {
       },
     });
   }
+
+  async selectBooksByKeyword(keyword: string): Promise<SelectBook[] | null> {
+    return await this.txHost.tx.book.findMany({
+      ...SELECT_BOOK,
+      where: {
+        OR: [
+          { title: { contains: keyword, mode: 'insensitive' } },
+          { author: { contains: keyword, mode: 'insensitive' } },
+        ],
+        deletedAt: null,
+      },
+      orderBy: { title: 'desc' },
+      take: 10,
+    });
+  }
 }
