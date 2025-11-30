@@ -26,4 +26,13 @@ export class BookService {
     }
     return response.map((response) => BookModel.fromPrisma(response));
   }
+
+  public async getBooksByKeyword(keyword: string): Promise<BookModel[]> {
+    const response = await this.bookRepository.selectBooksByKeyword(keyword);
+
+    if (!response || response.length === 0) {
+      return [];
+    }
+    return response.map((response) => BookModel.fromPrisma(response));
+  }
 }
