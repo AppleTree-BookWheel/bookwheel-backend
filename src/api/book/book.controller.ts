@@ -18,4 +18,9 @@ export class BookController {
   async getBooksByIdx(idx: number[]): Promise<GetBookResponseDto[]> {
     return this.bookService.getBooksByIdx(idx);
   }
+
+  @Get('search')
+  async getBooksByKeyword(keyword: string): Promise<GetBookResponseDto[]> {
+    return this.bookService.getBooksByKeyword(keyword);
+  }
 }
