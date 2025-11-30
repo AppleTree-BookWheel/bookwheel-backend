@@ -31,11 +31,7 @@ export class BookModel {
   /**
    * Prisma의 SelectBookDetail 반환값을 BookModel로 변환합니다.
    */
-  static fromPrisma(data: SelectBook | null): BookModel | null {
-    if (!data) {
-      return null;
-    }
-
+  static fromPrisma(data: SelectBook): BookModel {
     return new BookModel({
       idx: data.idx,
       title: data.title,
