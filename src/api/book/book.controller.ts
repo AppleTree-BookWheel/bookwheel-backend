@@ -4,8 +4,7 @@ import { GetBookOverviewResponseDto } from './dto/response/get-book-overview-res
 import { GetBookResponseDto } from './dto/response/get-book-response.dto';
 import { GetBookOverviewDto } from './dto/request/get-book-overview.dto';
 import { GetBookDto } from './dto/request/get-book.dto';
-import { get } from 'http';
-import { GetSearchBookDto } from './dto/request/get-Search-book.dto';
+import { GetSearchBookDto } from './dto/request/get-search-book.dto';
 
 @Controller('book')
 export class BookController {
