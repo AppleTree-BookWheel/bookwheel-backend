@@ -13,6 +13,7 @@ import { UserModule } from './api/user/user.module';
 import { LoginTokenModule } from './api/login-token/login-token.module';
 import { AuthModule } from './api/auth/auth.module';
 import { BookModule } from './api/book/book.module';
+import { BookHighlightModule } from './api/book-highlight/book-highlight.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { BookModule } from './api/book/book.module';
     LoginTokenModule,
     AuthModule,
     BookModule,
+    BookHighlightModule,
   ],
   controllers: [AppController],
   providers: [AppService],
