@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-export const SELECT_BOOK_HIGHLIGHT =
+export const SELECT_HIGHLIGHT =
   Prisma.validator<Prisma.BookHighlightDefaultArgs>()({
     select: {
       idx: true,
@@ -13,6 +13,6 @@ export const SELECT_BOOK_HIGHLIGHT =
     },
   });
 
-export type SelectBookHighlight = Prisma.BookHighlightGetPayload<
-  typeof SELECT_BOOK_HIGHLIGHT
+export type SelectHighlight = Prisma.BookHighlightGetPayload<
+  typeof SELECT_HIGHLIGHT
 >;

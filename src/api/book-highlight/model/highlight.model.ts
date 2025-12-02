@@ -1,6 +1,6 @@
-import { SelectBookHighlight } from '../model/prisma-type/select-book-highlight'; // 경로 확인 필요
+import { SelectHighlight } from './prisma-type/select-highlight';
 
-export class BookHighlightModel {
+export class HighlightModel {
   /**
    * 하이라이트 고유 식별자 (PK)
    *
@@ -43,15 +43,15 @@ export class BookHighlightModel {
    */
   createdAt: Date;
 
-  constructor(data: BookHighlightModel) {
+  constructor(data: HighlightModel) {
     Object.assign(this, data);
   }
 
   /**
    * Prisma 조회 결과(Payload)를 도메인 모델로 변환
    */
-  static fromPrisma(data: SelectBookHighlight): BookHighlightModel {
-    return new BookHighlightModel({
+  static fromPrisma(data: SelectHighlight): HighlightModel {
+    return new HighlightModel({
       idx: data.idx,
       userIdx: data.userIdx,
       partyIdx: data.partyIdx,

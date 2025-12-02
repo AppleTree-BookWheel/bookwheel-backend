@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BookHighlightModel } from './model/book-highlight.model';
+import { HighlightModel } from './model/highlight.model';
 import { BookHighlightRepository } from './book-highlight.repository';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class BookHighlightService {
 
   public async getHighlightListByPartyIdx(
     partyIdx: number,
-  ): Promise<BookHighlightModel[]> {
+  ): Promise<HighlightModel[]> {
     return await this.bookHighlightRepository.selectHighlightListByPartyIdx(
       partyIdx,
     );

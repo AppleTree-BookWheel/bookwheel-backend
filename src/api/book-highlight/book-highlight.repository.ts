@@ -2,9 +2,9 @@ import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 import { Injectable } from '@nestjs/common';
 import {
-  SELECT_BOOK_HIGHLIGHT,
-  SelectBookHighlight,
-} from './model/prisma-type/select-book-highlight';
+  SELECT_HIGHLIGHT,
+  SelectHighlight,
+} from './model/prisma-type/select-highlight';
 
 @Injectable()
 export class BookHighlightRepository {
@@ -14,9 +14,9 @@ export class BookHighlightRepository {
 
   public async selectHighlightListByPartyIdx(
     partyIdx: number,
-  ): Promise<SelectBookHighlight[]> {
+  ): Promise<SelectHighlight[]> {
     return await this.txHost.tx.bookHighlight.findMany({
-      ...SELECT_BOOK_HIGHLIGHT,
+      ...SELECT_HIGHLIGHT,
       where: {
         partyIdx,
         deletedAt: null,
@@ -26,4 +26,6 @@ export class BookHighlightRepository {
       },
     });
   }
+
+  public async selectHighlightDetailByIdx(idx: number) {}
 }
