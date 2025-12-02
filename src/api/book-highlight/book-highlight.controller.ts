@@ -9,9 +9,9 @@ export class BookHighlightController {
   constructor(private readonly bookHighlightService: BookHighlightService) {}
 
   @Get('/all')
-  public async getHighlightListByPartyIdx(
+  public async getHighlightsByPartyIdx(
     @Body() partyIdx: number,
   ): Promise<GetBookHighlightResponseDto[]> {
-    return await this.bookHighlightService.getHighlightListByPartyIdx(partyIdx);
+    return await this.bookHighlightService.getHighlightsByPartyIdx(partyIdx);
   }
 }
