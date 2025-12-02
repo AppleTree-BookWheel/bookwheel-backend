@@ -147,6 +147,7 @@ model BookHighlight {
   idx       Int       @id @default(autoincrement())
   userIdx   Int       @map("user_idx") // 'user_dx' 오타 수정 및 NOT NULL 보장
   bookIdx   Int       @map("book_idx")
+  partyIdx  Int       @map("party_idx")
   cfiRange  String    @map("cfi_range") @db.Text
   colorCode String    @map("color_code") @db.VarChar(10) // NOT NULL
   createdAt DateTime  @default(now()) @map("created_at")
@@ -155,6 +156,7 @@ model BookHighlight {
   // Relationships
   user     User          @relation(fields: [userIdx], references: [idx])
   book     Book          @relation(fields: [bookIdx], references: [idx])
+  party    Party         @relation(fields: [partyIdx], references: [idx])
   comments BookComment[] // Comment와의 1:N 관계
 
   // UNIQUE INDEX (사용자별 같은 구간 하이라이트 방지)
@@ -231,6 +233,7 @@ model Party {
   book        Book          @relation(fields: [bookIdx], references: [idx])
   memberships PartyMember[]
   partyBookProgresses     PartyBookProgress[]
+  highlights  BookHighlight[]
 
   @@map("party_tb")
 }

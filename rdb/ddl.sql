@@ -75,12 +75,15 @@ CREATE TABLE "book_tag_tb" (
 
 CREATE TABLE "book_highlight_tb" (
   "idx"        SERIAL       PRIMARY KEY,
+  "party_idx"  INTEGER      NOT NULL,
   "user_idx"   INTEGER      NOT NULL,
   "book_idx"   INTEGER      NOT NULL,
   "cfi_range"  TEXT         NOT NULL,
   "color_code" VARCHAR(10)  NOT NULL,
   "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "deleted_at" TIMESTAMP(3)
+  "deleted_at" TIMESTAMP(3),
+
+  UNIQUE ("party_idx", "user_idx", "book_idx", "cfi_range")
 );
 
 CREATE TABLE "book_comment_tb" (
@@ -217,14 +220,15 @@ ALTER TABLE "book_tag_tb" ADD CONSTRAINT "FK_book_tag_tb_book_idx" FOREIGN KEY (
 ALTER TABLE "book_tag_tb" ADD CONSTRAINT "FK_book_tag_tb_tag_idx" FOREIGN KEY ("tag_idx") REFERENCES "tag_tb" ("idx");
 ALTER TABLE "to_read_tb" ADD CONSTRAINT "FK_to_read_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
 ALTER TABLE "to_read_tb" ADD CONSTRAINT "FK_to_read_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
+
 ALTER TABLE "book_highlight_tb" ADD CONSTRAINT "FK_book_highlight_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
 ALTER TABLE "book_highlight_tb" ADD CONSTRAINT "FK_book_highlight_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
+ALTER TABLE "book_highlight_tb" ADD CONSTRAINT "FK_book_highlight_tb_party_idx" FOREIGN KEY ("party_idx") REFERENCES "party_tb" ("idx");
+
 ALTER TABLE "my_book_progress_tb" ADD CONSTRAINT "FK_my_book_progress_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
 ALTER TABLE "my_book_progress_tb" ADD CONSTRAINT "FK_my_book_progress_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
 ALTER TABLE "party_book_progress_tb" ADD CONSTRAINT "FK_party_book_progress_tb_party_idx" FOREIGN KEY ("party_idx") REFERENCES "party_tb" ("idx");
 ALTER TABLE "party_book_progress_tb" ADD CONSTRAINT "FK_party_book_progress_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
-
-
 
 -- Comment / Highlight FKs
 ALTER TABLE "book_comment_tb" ADD CONSTRAINT "FK_book_comment_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
@@ -238,3 +242,5 @@ CREATE UNIQUE INDEX "IDX_friend_tb" ON "friend_tb" ("request_user_idx", "receive
 CREATE UNIQUE INDEX "IDX_party_members_tb" ON "party_members_tb" ("party_idx", "user_idx");
 CREATE UNIQUE INDEX "IDX_book_tag_tb" ON "book_tag_tb" ("book_idx", "tag_idx");
 CREATE UNIQUE INDEX "IDX_to_read_tb" ON "to_read_tb" ("user_idx", "book_idx");
+
+CREATE INDEX "IDX_book_highlight_party_book" ON "book_highlight_tb" ("party_idx", "book_idx");
