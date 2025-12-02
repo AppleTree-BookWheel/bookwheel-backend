@@ -149,6 +149,7 @@ model BookHighlight {
   bookIdx   Int       @map("book_idx")
   partyIdx  Int       @map("party_idx")
   cfiRange  String    @map("cfi_range") @db.Text
+  content  String    @db.Text
   colorCode String    @map("color_code") @db.VarChar(10) // NOT NULL
   createdAt DateTime  @default(now()) @map("created_at")
   deletedAt DateTime? @map("deleted_at")
