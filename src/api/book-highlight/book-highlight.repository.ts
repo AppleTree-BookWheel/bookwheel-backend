@@ -5,10 +5,6 @@ import {
   SELECT_HIGHLIGHT,
   SelectHighlight,
 } from './model/prisma-type/select-highlight';
-import {
-  SELECT_HIGHLIGHT_DETAIL,
-  SelectHighlightDetail,
-} from './model/prisma-type/select-highlight-detail';
 
 @Injectable()
 export class BookHighlightRepository {
@@ -31,14 +27,19 @@ export class BookHighlightRepository {
     });
   }
 
-  public async selectHighlightDetailByIdx(
-    idx: number,
-  ): Promise<SelectHighlightDetail | null> {
-    return await this.txHost.tx.bookHighlight.findUnique({
-      ...SELECT_HIGHLIGHT_DETAIL,
+  public async selectHighlightsByPartyAndUserIdx(
+    partyIdx: number,
+    userIdx: number,
+  ): Promise<SelectHighlight[]> {
+    return await this.txHost.tx.bookHighlight.findMany({
+      ...SELECT_HIGHLIGHT,
       where: {
-        idx,
+        partyIdx,
+        userIdx,
         deletedAt: null,
+      },
+      orderBy: {
+        createdAt: 'asc',
       },
     });
   }
