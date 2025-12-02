@@ -12,7 +12,7 @@ export class BookHighlightRepository {
     private readonly txHost: TransactionHost<TransactionalAdapterPrisma>,
   ) {}
 
-  public async selectHighlightsByPartyIdx(
+  public async selectHighlightListByPartyIdx(
     partyIdx: number,
   ): Promise<SelectBookHighlight[]> {
     return await this.txHost.tx.bookHighlight.findMany({

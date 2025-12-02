@@ -8,10 +8,10 @@ export class BookHighlightService {
     private readonly bookHighlightRepository: BookHighlightRepository,
   ) {}
 
-  public async getHighlightsByPartyIdx(
+  public async getHighlightListByPartyIdx(
     partyIdx: number,
   ): Promise<BookHighlightModel[]> {
-    return await this.bookHighlightRepository.selectHighlightsByPartyIdx(
+    return await this.bookHighlightRepository.selectHighlightListByPartyIdx(
       partyIdx,
     );
   }
