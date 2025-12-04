@@ -34,7 +34,7 @@ export class BookHighlightRepository {
 
   public async selectHighlightsByPartyAndUserIdx(
     input: getMyHighlightInput,
-  ): Promise<SelectMyHighlight[] | null> {
+  ): Promise<SelectMyHighlight[]> {
     const { partyIdx, userIdx } = input;
     return await this.txHost.tx.bookHighlight.findMany({
       ...SELECT_MY_HIGHLIGHT,
