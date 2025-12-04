@@ -14,6 +14,7 @@ import {
   SELECT_COMMENT,
   SelectComment,
 } from './model/prisma-type/select-comment';
+import { CreateCommentInput } from './inputs/create-comment.input';
 
 @Injectable()
 export class BookHighlightRepository {
@@ -108,6 +109,21 @@ export class BookHighlightRepository {
       },
       orderBy: {
         createdAt: 'asc',
+      },
+    });
+  }
+
+  public async insertComment(
+    userIdx: number,
+    createCommentInput: CreateCommentInput,
+  ): Promise<SelectComment> {
+    return await this.txHost.tx.bookComment.create({
+      ...SELECT_COMMENT,
+      data: {
+        highlightIdx: createCommentInput.highlightIdx,
+        bookIdx: createCommentInput.bookIdx,
+        userIdx: userIdx,
+        content: createCommentInput.content,
       },
     });
   }
