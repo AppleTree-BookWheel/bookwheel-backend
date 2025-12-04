@@ -9,6 +9,7 @@ import { MyHighlightModel } from './model/my-highlight.model';
 import { CreateHighlightInput } from './inputs/create-highlight.input';
 import { CommentModel } from './model/comment.model';
 import { CreateCommentInput } from './inputs/create-comment.input';
+import { UpdateCommentInput } from './inputs/update-comment.input';
 
 @Injectable()
 export class BookHighlightService {
@@ -78,5 +79,26 @@ export class BookHighlightService {
     input: CreateCommentInput,
   ): Promise<void> {
     await this.bookHighlightRepository.insertComment(userIdx, input);
+  }
+
+  public async updateCommentByCommentAndUserIdx(
+    userIdx: number,
+    input: UpdateCommentInput,
+  ): Promise<void> {
+    const response = await this.bookHighlightRepository.selectCommentByIdx(
+      input.commentIdx,
+    );
+    if (!response) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    if (response.userIdx !== userIdx) {
+      throw new ForbiddenException('Unauthorized to update this comment');
+    }
+
+    await this.bookHighlightRepository.updateCommentByCommentAndUserIdx(
+      userIdx,
+      input,
+    );
   }
 }
