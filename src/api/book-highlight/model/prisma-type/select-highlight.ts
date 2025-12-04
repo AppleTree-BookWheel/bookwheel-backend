@@ -8,6 +8,7 @@ export const SELECT_HIGHLIGHT =
       bookIdx: true,
       partyIdx: true,
       cfiRange: true,
+      content: true,
       colorCode: true,
       createdAt: true,
     },
