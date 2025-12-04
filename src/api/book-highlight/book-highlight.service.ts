@@ -8,6 +8,7 @@ import { BookHighlightRepository } from './book-highlight.repository';
 import { MyHighlightModel } from './model/my-highlight.model';
 import { CreateHighlightInput } from './inputs/create-highlight.input';
 import { CommentModel } from './model/comment.model';
+import { CreateCommentInput } from './inputs/create-comment.input';
 
 @Injectable()
 export class BookHighlightService {
@@ -70,5 +71,12 @@ export class BookHighlightService {
         highlightIdx,
       );
     return response.map((data) => CommentModel.fromPrisma(data));
+  }
+
+  public async createComment(
+    userIdx: number,
+    input: CreateCommentInput,
+  ): Promise<void> {
+    await this.bookHighlightRepository.insertComment(userIdx, input);
   }
 }
