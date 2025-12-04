@@ -5,6 +5,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { GetMyHighlightResponseDto } from './dto/response/get-my-highlight-response.dto';
 import { CreateHighlightDto } from './dto/request/create-highlight.dto';
+import { GetCommentResponseDto } from './dto/response/get-comment-response.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('book-highlight')
@@ -42,6 +43,15 @@ export class BookHighlightController {
   ): Promise<void> {
     await this.bookHighlightService.deleteHighlightByHighlightAndUserIdx(
       user.idx,
+      highlightIdx,
+    );
+  }
+
+  @Get('/comments')
+  public async getCommentsByHighlightIdx(
+    @Body('highlightIdx') highlightIdx: number,
+  ): Promise<GetCommentResponseDto[]> {
+    return await this.bookHighlightService.getCommentsByHighlightIdx(
       highlightIdx,
     );
   }
