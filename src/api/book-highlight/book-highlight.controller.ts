@@ -84,4 +84,15 @@ export class BookHighlightController {
       dto,
     );
   }
+
+  @Delete('/comments')
+  public async deleteCommentByUserAndCommentIdx(
+    @User() user,
+    @Body('commentIdx') commentIdx: number,
+  ): Promise<void> {
+    await this.bookHighlightService.deleteCommentByUserAndCommentIdx(
+      user.idx,
+      commentIdx,
+    );
+  }
 }
