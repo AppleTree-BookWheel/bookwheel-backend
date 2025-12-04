@@ -101,4 +101,24 @@ export class BookHighlightService {
       input,
     );
   }
+
+  public async deleteCommentByUserAndCommentIdx(
+    userIdx: number,
+    commentIdx: number,
+  ): Promise<void> {
+    const response =
+      await this.bookHighlightRepository.selectCommentByIdx(commentIdx);
+    if (!response) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    if (response.userIdx !== userIdx) {
+      throw new ForbiddenException('Unauthorized to delete this comment');
+    }
+
+    await this.bookHighlightRepository.deleteCommentByUserAndCommentIdx(
+      userIdx,
+      commentIdx,
+    );
+  }
 }
