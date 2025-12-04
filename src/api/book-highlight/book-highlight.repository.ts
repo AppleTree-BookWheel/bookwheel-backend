@@ -10,6 +10,10 @@ import {
   SelectMyHighlight,
 } from './model/prisma-type/select-my-highlight';
 import { CreateHighlightInput } from './inputs/create-highlight.input';
+import {
+  SELECT_COMMENT,
+  SelectComment,
+} from './model/prisma-type/select-comment';
 
 @Injectable()
 export class BookHighlightRepository {
@@ -90,6 +94,20 @@ export class BookHighlightRepository {
       },
       data: {
         deletedAt: new Date(),
+      },
+    });
+  }
+
+  public async selectCommentsByHighlightIdx(
+    highlightIdx: number,
+  ): Promise<SelectComment[]> {
+    return await this.txHost.tx.bookComment.findMany({
+      ...SELECT_COMMENT,
+      where: {
+        highlightIdx,
+      },
+      orderBy: {
+        createdAt: 'asc',
       },
     });
   }
