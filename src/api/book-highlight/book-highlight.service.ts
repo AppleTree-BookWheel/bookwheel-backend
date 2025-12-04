@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { HighlightModel } from './model/highlight.model';
 import { BookHighlightRepository } from './book-highlight.repository';
 import { MyHighlightModel } from './model/my-highlight.model';
-import { getMyHighlightInput } from './inputs/get-my-highlight.input';
+import { CreateHighlightInput } from './inputs/create-highlight.input';
 
 @Injectable()
 export class BookHighlightService {
@@ -19,12 +19,21 @@ export class BookHighlightService {
   }
 
   public async getMyHighlights(
-    input: getMyHighlightInput,
+    userIdx: number,
+    partyIdx: number,
   ): Promise<MyHighlightModel[]> {
     const response =
       await this.bookHighlightRepository.selectHighlightsByPartyAndUserIdx(
-        input,
+        userIdx,
+        partyIdx,
       );
     return response.map((data) => MyHighlightModel.fromPrisma(data));
+  }
+
+  public async createHighlight(
+    idx: number,
+    input: CreateHighlightInput,
+  ): Promise<void> {
+    await this.bookHighlightRepository.insertHighlight(idx, input);
   }
 }
