@@ -1,9 +1,13 @@
+import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+
 export class CreateHighlightDto {
   /**
    * 파티 식별자
    *
    * @example 1
    */
+  @IsInt()
+  @IsNotEmpty()
   partyIdx: number;
 
   /**
@@ -11,6 +15,8 @@ export class CreateHighlightDto {
    *
    * @example 2
    */
+  @IsInt()
+  @IsNotEmpty()
   bookIdx: number;
 
   /**
@@ -18,6 +24,8 @@ export class CreateHighlightDto {
    *
    * @example 3
    */
+  @IsInt()
+  @IsNotEmpty()
   userIdx: number;
 
   /**
@@ -25,6 +33,8 @@ export class CreateHighlightDto {
    *
    * @example "epubcfi(/6/4[chap01ref]!/4/2/1:0)"
    */
+  @IsString()
+  @IsNotEmpty()
   cfiRange: string;
 
   /**
@@ -32,6 +42,8 @@ export class CreateHighlightDto {
    *
    * @example "This is a highlighted text."
    */
+  @IsString()
+  @IsNotEmpty()
   content: string;
 
   /**
@@ -39,5 +51,7 @@ export class CreateHighlightDto {
    *
    * @example "#FF5733"
    */
+  @IsString()
+  @IsNotEmpty()
   colorCode: string;
 }

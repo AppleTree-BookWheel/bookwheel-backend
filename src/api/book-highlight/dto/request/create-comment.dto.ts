@@ -1,9 +1,13 @@
+import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+
 export class CreateCommentDto {
   /**
    * 하이라이트 idx
    *
    * @example 1
    */
+  @IsInt()
+  @IsNotEmpty()
   highlightIdx: number;
 
   /**
@@ -11,6 +15,8 @@ export class CreateCommentDto {
    *
    * @example 1
    */
+  @IsInt()
+  @IsNotEmpty()
   bookIdx: number;
 
   /**
@@ -18,5 +24,7 @@ export class CreateCommentDto {
    *
    * @example "This is a comment."
    */
+  @IsString()
+  @IsNotEmpty()
   content: string;
 }
