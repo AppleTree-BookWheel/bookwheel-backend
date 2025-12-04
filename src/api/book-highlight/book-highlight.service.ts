@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { HighlightModel } from './model/highlight.model';
 import { BookHighlightRepository } from './book-highlight.repository';
 import { MyHighlightModel } from './model/my-highlight.model';
@@ -35,5 +39,25 @@ export class BookHighlightService {
     input: CreateHighlightInput,
   ): Promise<void> {
     await this.bookHighlightRepository.insertHighlight(userIdx, input);
+  }
+
+  public async deleteHighlightByHighlightAndUserIdx(
+    userIdx: number,
+    highlightIdx: number,
+  ): Promise<void> {
+    const highlight =
+      await this.bookHighlightRepository.selectHighlightByIdx(highlightIdx);
+    if (!highlight) {
+      throw new NotFoundException('Highlight not found');
+    }
+
+    if (highlight.userIdx !== userIdx) {
+      throw new ForbiddenException('Unauthorized to delete this highlight');
+    }
+
+    await this.bookHighlightRepository.deleteHighlightByUserAndHighlightIdx(
+      userIdx,
+      highlightIdx,
+    );
   }
 }
