@@ -5,6 +5,11 @@ import {
   SELECT_HIGHLIGHT,
   SelectHighlight,
 } from './model/prisma-type/select-highlight';
+import {
+  SELECT_MY_HIGHLIGHT,
+  SelectMyHighlight,
+} from './model/prisma-type/select-my-highlight';
+import { getMyHighlightInput } from './inputs/get-my-highlight.input';
 
 @Injectable()
 export class BookHighlightRepository {
@@ -28,18 +33,18 @@ export class BookHighlightRepository {
   }
 
   public async selectHighlightsByPartyAndUserIdx(
-    partyIdx: number,
-    userIdx: number,
-  ): Promise<SelectHighlight[]> {
+    input: getMyHighlightInput,
+  ): Promise<SelectMyHighlight[] | null> {
+    const { partyIdx, userIdx } = input;
     return await this.txHost.tx.bookHighlight.findMany({
-      ...SELECT_HIGHLIGHT,
+      ...SELECT_MY_HIGHLIGHT,
       where: {
         partyIdx,
         userIdx,
         deletedAt: null,
       },
       orderBy: {
-        createdAt: 'asc',
+        createdAt: 'desc',
       },
     });
   }
