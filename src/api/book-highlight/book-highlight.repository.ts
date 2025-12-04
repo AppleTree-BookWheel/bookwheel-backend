@@ -15,6 +15,7 @@ import {
   SelectComment,
 } from './model/prisma-type/select-comment';
 import { CreateCommentInput } from './inputs/create-comment.input';
+import { UpdateCommentInput } from './inputs/update-comment.input';
 
 @Injectable()
 export class BookHighlightRepository {
@@ -99,6 +100,15 @@ export class BookHighlightRepository {
     });
   }
 
+  public async selectCommentByIdx(idx: number): Promise<SelectComment | null> {
+    return await this.txHost.tx.bookComment.findFirst({
+      ...SELECT_COMMENT,
+      where: {
+        idx,
+      },
+    });
+  }
+
   public async selectCommentsByHighlightIdx(
     highlightIdx: number,
   ): Promise<SelectComment[]> {
@@ -124,6 +134,22 @@ export class BookHighlightRepository {
         bookIdx: createCommentInput.bookIdx,
         userIdx: userIdx,
         content: createCommentInput.content,
+      },
+    });
+  }
+
+  public async updateCommentByCommentAndUserIdx(
+    userIdx: number,
+    input: UpdateCommentInput,
+  ): Promise<void> {
+    const { commentIdx, content } = input;
+    await this.txHost.tx.bookComment.updateMany({
+      where: {
+        idx: commentIdx,
+        userIdx: userIdx,
+      },
+      data: {
+        content: content,
       },
     });
   }
