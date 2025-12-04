@@ -30,6 +30,13 @@ export class HighlightModel {
   cfiRange: string;
 
   /**
+   * 하이라이트 텍스트 내용
+   *
+   * @example "This is a highlighted text."
+   */
+  content: string;
+
+  /**
    * 하이라이트 색상 코드
    *
    * @example "#FF5733"
@@ -56,6 +63,7 @@ export class HighlightModel {
       userIdx: data.userIdx,
       partyIdx: data.partyIdx,
       cfiRange: data.cfiRange,
+      content: data.content,
       colorCode: data.colorCode,
       createdAt: data.createdAt,
     });
