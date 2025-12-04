@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
 import { BookHighlightService } from './book-highlight.service';
 import { GetBookHighlightResponseDto } from './dto/request/get-book-highlight-response.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -33,5 +33,16 @@ export class BookHighlightController {
     @Body() dto: CreateHighlightDto,
   ): Promise<void> {
     await this.bookHighlightService.createHighlight(user.idx, dto);
+  }
+
+  @Delete()
+  public async deleteHighlightByHighlightAndUserIdx(
+    @User() user,
+    @Body('highlightIdx') highlightIdx: number,
+  ): Promise<void> {
+    await this.bookHighlightService.deleteHighlightByHighlightAndUserIdx(
+      user.idx,
+      highlightIdx,
+    );
   }
 }
