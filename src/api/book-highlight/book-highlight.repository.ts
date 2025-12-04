@@ -9,7 +9,7 @@ import {
   SELECT_MY_HIGHLIGHT,
   SelectMyHighlight,
 } from './model/prisma-type/select-my-highlight';
-import { getMyHighlightInput } from './inputs/get-my-highlight.input';
+import { CreateHighlightInput } from './inputs/create-highlight.input';
 
 @Injectable()
 export class BookHighlightRepository {
@@ -33,18 +33,35 @@ export class BookHighlightRepository {
   }
 
   public async selectHighlightsByPartyAndUserIdx(
-    input: getMyHighlightInput,
+    userIdx: number,
+    partyIdx: number,
   ): Promise<SelectMyHighlight[]> {
-    const { partyIdx, userIdx } = input;
     return await this.txHost.tx.bookHighlight.findMany({
       ...SELECT_MY_HIGHLIGHT,
       where: {
-        partyIdx,
         userIdx,
+        partyIdx,
         deletedAt: null,
       },
       orderBy: {
         createdAt: 'desc',
+      },
+    });
+  }
+
+  public async insertHighlight(
+    idx: number,
+    input: CreateHighlightInput,
+  ): Promise<SelectHighlight> {
+    return await this.txHost.tx.bookHighlight.create({
+      ...SELECT_HIGHLIGHT,
+      data: {
+        partyIdx: input.partyIdx,
+        bookIdx: input.bookIdx,
+        userIdx: idx,
+        cfiRange: input.cfiRange,
+        content: input.content,
+        colorCode: input.colorCode,
       },
     });
   }
