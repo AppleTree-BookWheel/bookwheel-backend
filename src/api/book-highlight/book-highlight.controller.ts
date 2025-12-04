@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { BookHighlightService } from './book-highlight.service';
 import { GetBookHighlightResponseDto } from './dto/request/get-book-highlight-response.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -7,6 +15,7 @@ import { GetMyHighlightResponseDto } from './dto/response/get-my-highlight-respo
 import { CreateHighlightDto } from './dto/request/create-highlight.dto';
 import { GetCommentResponseDto } from './dto/response/get-comment-response.dto';
 import { CreateCommentDto } from './dto/request/create-comment.dto';
+import { UpdateCommentDto } from './dto/request/update-comment.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('book-highlight')
@@ -63,5 +72,16 @@ export class BookHighlightController {
     @Body() dto: CreateCommentDto,
   ): Promise<void> {
     await this.bookHighlightService.createComment(user.idx, dto);
+  }
+
+  @Patch('/comments')
+  public async updateCommentByCommentAndUserIdx(
+    @User() user,
+    @Body() dto: UpdateCommentDto,
+  ): Promise<void> {
+    await this.bookHighlightService.updateCommentByCommentAndUserIdx(
+      user.idx,
+      dto,
+    );
   }
 }
