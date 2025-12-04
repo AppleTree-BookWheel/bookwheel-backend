@@ -138,7 +138,7 @@ export class BookHighlightRepository {
     });
   }
 
-  public async updateCommentByCommentAndUserIdx(
+  public async updateCommentByUserAndCommentIdx(
     userIdx: number,
     input: UpdateCommentInput,
   ): Promise<void> {

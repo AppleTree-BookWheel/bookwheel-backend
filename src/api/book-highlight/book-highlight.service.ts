@@ -81,7 +81,7 @@ export class BookHighlightService {
     await this.bookHighlightRepository.insertComment(userIdx, input);
   }
 
-  public async updateCommentByCommentAndUserIdx(
+  public async updateCommentByUserAndCommentIdx(
     userIdx: number,
     input: UpdateCommentInput,
   ): Promise<void> {
@@ -96,7 +96,7 @@ export class BookHighlightService {
       throw new ForbiddenException('Unauthorized to update this comment');
     }
 
-    await this.bookHighlightRepository.updateCommentByCommentAndUserIdx(
+    await this.bookHighlightRepository.updateCommentByUserAndCommentIdx(
       userIdx,
       input,
     );

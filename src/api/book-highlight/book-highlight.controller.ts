@@ -75,11 +75,11 @@ export class BookHighlightController {
   }
 
   @Patch('/comments')
-  public async updateCommentByCommentAndUserIdx(
+  public async updateCommentByUserAndCommentIdx(
     @User() user,
     @Body() dto: UpdateCommentDto,
   ): Promise<void> {
-    await this.bookHighlightService.updateCommentByCommentAndUserIdx(
+    await this.bookHighlightService.updateCommentByUserAndCommentIdx(
       user.idx,
       dto,
     );
