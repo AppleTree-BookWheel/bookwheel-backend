@@ -31,9 +31,9 @@ export class BookHighlightService {
   }
 
   public async createHighlight(
-    idx: number,
+    userIdx: number,
     input: CreateHighlightInput,
   ): Promise<void> {
-    await this.bookHighlightRepository.insertHighlight(idx, input);
+    await this.bookHighlightRepository.insertHighlight(userIdx, input);
   }
 }

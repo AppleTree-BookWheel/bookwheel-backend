@@ -50,7 +50,7 @@ export class BookHighlightRepository {
   }
 
   public async insertHighlight(
-    idx: number,
+    userIdx: number,
     input: CreateHighlightInput,
   ): Promise<SelectHighlight> {
     return await this.txHost.tx.bookHighlight.create({
@@ -58,10 +58,22 @@ export class BookHighlightRepository {
       data: {
         partyIdx: input.partyIdx,
         bookIdx: input.bookIdx,
-        userIdx: idx,
+        userIdx: userIdx,
         cfiRange: input.cfiRange,
         content: input.content,
         colorCode: input.colorCode,
+      },
+    });
+  }
+
+  public async deleteHighlightByIdx(idx: number): Promise<void> {
+    await this.txHost.tx.bookHighlight.update({
+      ...SELECT_HIGHLIGHT,
+      where: {
+        idx: idx,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   }
