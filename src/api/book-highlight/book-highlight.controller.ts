@@ -6,6 +6,7 @@ import { User } from 'src/common/decorators/user.decorator';
 import { GetMyHighlightResponseDto } from './dto/response/get-my-highlight-response.dto';
 import { CreateHighlightDto } from './dto/request/create-highlight.dto';
 import { GetCommentResponseDto } from './dto/response/get-comment-response.dto';
+import { CreateCommentDto } from './dto/request/create-comment.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('book-highlight')
@@ -54,5 +55,13 @@ export class BookHighlightController {
     return await this.bookHighlightService.getCommentsByHighlightIdx(
       highlightIdx,
     );
+  }
+
+  @Post('/comments')
+  public async createComment(
+    @User() user,
+    @Body() dto: CreateCommentDto,
+  ): Promise<void> {
+    await this.bookHighlightService.createComment(user.idx, dto);
   }
 }
