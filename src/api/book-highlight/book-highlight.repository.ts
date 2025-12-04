@@ -153,4 +153,16 @@ export class BookHighlightRepository {
       },
     });
   }
+
+  public async deleteCommentByUserAndCommentIdx(
+    userIdx: number,
+    commentIdx: number,
+  ): Promise<void> {
+    await this.txHost.tx.bookComment.deleteMany({
+      where: {
+        idx: commentIdx,
+        userIdx: userIdx,
+      },
+    });
+  }
 }
