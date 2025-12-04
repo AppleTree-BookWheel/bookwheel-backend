@@ -17,6 +17,18 @@ export class BookHighlightRepository {
     private readonly txHost: TransactionHost<TransactionalAdapterPrisma>,
   ) {}
 
+  public async selectHighlightByIdx(
+    idx: number,
+  ): Promise<SelectHighlight | null> {
+    return await this.txHost.tx.bookHighlight.findFirst({
+      ...SELECT_HIGHLIGHT,
+      where: {
+        idx,
+        deletedAt: null,
+      },
+    });
+  }
+
   public async selectHighlightsByPartyIdx(
     partyIdx: number,
   ): Promise<SelectHighlight[]> {
@@ -66,11 +78,15 @@ export class BookHighlightRepository {
     });
   }
 
-  public async deleteHighlightByIdx(idx: number): Promise<void> {
-    await this.txHost.tx.bookHighlight.update({
-      ...SELECT_HIGHLIGHT,
+  public async deleteHighlightByUserAndHighlightIdx(
+    userIdx: number,
+    highlightIdx: number,
+  ): Promise<void> {
+    await this.txHost.tx.bookHighlight.updateMany({
       where: {
-        idx: idx,
+        idx: highlightIdx,
+        userIdx: userIdx,
+        deletedAt: null,
       },
       data: {
         deletedAt: new Date(),
