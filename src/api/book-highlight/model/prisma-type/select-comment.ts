@@ -6,6 +6,7 @@ export const SELECT_COMMENT = Prisma.validator<Prisma.BookCommentDefaultArgs>()(
       idx: true,
       userIdx: true,
       highlightIdx: true,
+      bookIdx: true,
       content: true,
       createdAt: true,
       user: {

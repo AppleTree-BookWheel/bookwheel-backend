@@ -4,6 +4,7 @@ export class CommentModel {
   idx: number;
   userIdx: number;
   highlightIdx: number;
+  bookIdx: number;
   content: string;
   createdAt: Date;
 
@@ -19,6 +20,7 @@ export class CommentModel {
       idx: data.idx,
       userIdx: data.userIdx,
       highlightIdx: data.highlightIdx,
+      bookIdx: data.bookIdx,
       content: data.content,
       createdAt: data.createdAt,
 
