@@ -14,7 +14,7 @@ export class PartyRepository {
 
   public async insertParty(
     hostUserIdx: number,
-    input: CreatePartyInput,
+    input: Omit<CreatePartyInput, 'invitedUserIdxs'>,
   ): Promise<SelectParty> {
     return await this.txHost.tx.party.create({
       ...SELECT_PARTY,
