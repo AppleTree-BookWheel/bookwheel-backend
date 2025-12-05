@@ -33,9 +33,22 @@ export class PartyRepository {
         memberships: {
           create: {
             userIdx: hostUserIdx,
-            status: PartyMemberStatus.ACCEPTED,
+            status: PartyMemberStatus.JOINED,
           },
         },
+      },
+    });
+  }
+
+  public async insertPartyMember(
+    userIdx: number,
+    partyIdx: number,
+  ): Promise<void> {
+    await this.txHost.tx.partyMember.create({
+      data: {
+        partyIdx,
+        userIdx,
+        status: PartyMemberStatus.JOINED,
       },
     });
   }
