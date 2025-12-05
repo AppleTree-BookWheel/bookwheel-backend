@@ -51,7 +51,7 @@ export class BookHighlightController {
   @Delete()
   public async deleteHighlightByHighlightAndUserIdx(
     @User() user,
-    @Body('highlightIdx') highlightIdx: number,
+    @Param('highlightIdx', ParseIntPipe) highlightIdx: number,
   ): Promise<void> {
     await this.bookHighlightService.deleteHighlightByHighlightAndUserIdx(
       user.idx,
