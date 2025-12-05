@@ -3,12 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { BookHighlightService } from './book-highlight.service';
-import { GetBookHighlightResponseDto } from './dto/request/get-book-highlight-response.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { GetMyHighlightResponseDto } from './dto/response/get-my-highlight-response.dto';
@@ -16,6 +17,7 @@ import { CreateHighlightDto } from './dto/request/create-highlight.dto';
 import { GetCommentResponseDto } from './dto/response/get-comment-response.dto';
 import { CreateCommentDto } from './dto/request/create-comment.dto';
 import { UpdateCommentDto } from './dto/request/update-comment.dto';
+import { GetBookHighlightResponseDto } from './dto/response/get-book-highlight-response.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('book-highlight')
@@ -24,7 +26,7 @@ export class BookHighlightController {
 
   @Get('/all')
   public async getHighlightsByPartyIdx(
-    @Body() partyIdx: number,
+    @Body('partyIdx') partyIdx: number,
   ): Promise<GetBookHighlightResponseDto[]> {
     return await this.bookHighlightService.getHighlightsByPartyIdx(partyIdx);
   }
@@ -85,10 +87,10 @@ export class BookHighlightController {
     );
   }
 
-  @Delete('/comments')
+  @Delete('/comments/:commentIdx')
   public async deleteCommentByUserAndCommentIdx(
     @User() user,
-    @Body('commentIdx') commentIdx: number,
+    @Param('commentIdx', ParseIntPipe) commentIdx: number,
   ): Promise<void> {
     await this.bookHighlightService.deleteCommentByUserAndCommentIdx(
       user.idx,
