@@ -20,15 +20,6 @@ export class CreateHighlightDto {
   bookIdx: number;
 
   /**
-   * 작성자(유저) 식별자
-   *
-   * @example 3
-   */
-  @IsInt()
-  @IsNotEmpty()
-  userIdx: number;
-
-  /**
    * 하이라이트 위치 정보 (CFI)
    *
    * @example "epubcfi(/6/4[chap01ref]!/4/2/1:0)"
