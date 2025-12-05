@@ -1,3 +1,9 @@
+INSERT INTO user_tb (idx, nickname, type, age, gender) 
+VALUES (1, 'nickname', 'BASIC', 25, 'FEMALE');
+
+INSERT INTO user_basic_tb (user_idx, id, password, email) 
+VALUES (1, 'heeju', 'password', 'test2@example.com');
+
 INSERT INTO book_tb (
     idx, 
     title, 
@@ -77,3 +83,9 @@ INSERT INTO survey_option_tb (question_idx, book_idx) VALUES
 (4, 4), 
 (4, 5),
 (4, 6); 
+
+INSERT INTO "party_tb" ("idx", "host_user_idx", "book_idx", "title", "description", "max_members", "current_members", "status", "is_private") 
+VALUES (1, 1, 1, '테스트 독서모임', '테스트 설명입니다.', 10, 1, 'OPEN', false);
+
+SELECT setval('user_tb_idx_seq', (SELECT MAX(idx) FROM user_tb));
+SELECT setval('party_tb_idx_seq', (SELECT MAX(idx) FROM party_tb));

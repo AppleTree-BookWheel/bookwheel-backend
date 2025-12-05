@@ -84,7 +84,7 @@ CREATE TABLE "book_highlight_tb" (
   "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "deleted_at" TIMESTAMP(3),
 
-  UNIQUE ("party_idx", "user_idx", "book_idx", "cfi_range")
+  UNIQUE ("user_idx", "book_idx", "cfi_range")
 );
 
 CREATE TABLE "book_comment_tb" (
