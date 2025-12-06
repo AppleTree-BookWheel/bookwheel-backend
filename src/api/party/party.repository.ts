@@ -10,6 +10,10 @@ import {
   SelectPartyOverview,
 } from './model/prisma-type/select-party-overview';
 import { UpdatePartyInput } from './inputs/update-party.input';
+import {
+  SELECT_PARTY_MEMBER,
+  SelectPartyMember,
+} from './model/prisma-type/select-party-member';
 
 @Injectable()
 export class PartyRepository {
@@ -62,6 +66,19 @@ export class PartyRepository {
             status: PartyMemberStatus.JOINED,
           },
         },
+      },
+    });
+  }
+
+  public async selectPartyMemberByUserAndPartyIdx(
+    userIdx: number,
+    partyIdx: number,
+  ): Promise<SelectPartyMember | null> {
+    return await this.txHost.tx.partyMember.findFirst({
+      ...SELECT_PARTY_MEMBER,
+      where: {
+        userIdx: userIdx,
+        partyIdx: partyIdx,
       },
     });
   }
