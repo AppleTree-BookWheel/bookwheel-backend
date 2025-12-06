@@ -5,6 +5,10 @@ import { CreatePartyInput } from './inputs/create-party.input';
 import { SELECT_PARTY, SelectParty } from './model/prisma-type/select-party';
 import { PartyStatus } from './constants/party-status';
 import { PartyMemberStatus } from './constants/party-member-status';
+import {
+  SELECT_PARTY_OVERVIEW,
+  SelectPartyOverview,
+} from './model/prisma-type/select-party-overview';
 
 @Injectable()
 export class PartyRepository {
@@ -49,6 +53,19 @@ export class PartyRepository {
         partyIdx,
         userIdx,
         status: PartyMemberStatus.JOINED,
+      },
+    });
+  }
+
+  public async selectPartyOverviews(): Promise<SelectPartyOverview[]> {
+    return await this.txHost.tx.party.findMany({
+      ...SELECT_PARTY_OVERVIEW,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        deletedAt: null,
+        status: PartyStatus.OPEN,
       },
     });
   }
