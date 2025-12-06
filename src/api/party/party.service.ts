@@ -43,6 +43,24 @@ export class PartyService {
     return PartyModel.fromPrisma(party);
   }
 
+  public async getHostedPartyByUserIdx(
+    userIdx: number,
+  ): Promise<PartyOverviewModel[]> {
+    const response =
+      await this.partyRepository.selectHostedPartyByUserIdx(userIdx);
+
+    return response.map((data) => PartyOverviewModel.fromPrisma(data));
+  }
+
+  public async getJoinedPartyByUserIdx(
+    userIdx: number,
+  ): Promise<PartyOverviewModel[]> {
+    const response =
+      await this.partyRepository.selectJoinedPartyByUserIdx(userIdx);
+
+    return response.map((data) => PartyOverviewModel.fromPrisma(data));
+  }
+
   public async updatePartyByUserAndPartyIdx(
     userIdx: number,
     input: UpdatePartyInput,
