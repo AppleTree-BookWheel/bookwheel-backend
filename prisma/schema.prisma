@@ -15,7 +15,7 @@ model User {
   profileImagePath String?   @map("profile_image_path") @db.VarChar(255)
   type             String?   @db.VarChar(50)
   age              Int?
-  gender           String?   @db.VarChar(10)
+  gender           String?   @db.VarChar(50)
   createdAt        DateTime  @default(now()) @map("created_at")
   deletedAt        DateTime? @map("deleted_at")
 
@@ -127,6 +127,7 @@ model Tag {
   name    String @db.VarChar(50)
 
   books BookTag[]
+  options SurveyOptionTag[]
 
   @@map("tag_tb")
 }
@@ -149,7 +150,7 @@ model BookHighlight {
   bookIdx   Int       @map("book_idx")
   partyIdx  Int       @map("party_idx")
   cfiRange  String    @map("cfi_range") @db.Text
-  content  String    @db.Text
+  content   String    @db.Text 
   colorCode String    @map("color_code") @db.VarChar(10) // NOT NULL
   createdAt DateTime  @default(now()) @map("created_at")
   deletedAt DateTime? @map("deleted_at")
@@ -271,6 +272,7 @@ model SurveyOption {
   question  SurveyQuestion   @relation(fields: [questionIdx], references: [idx])
   responses SurveyResponse[]
   book      Book?            @relation(fields: [bookIdx], references: [idx])
+  tags      SurveyOptionTag[]
 
   @@map("survey_option_tb")
 }
@@ -285,8 +287,19 @@ model SurveyResponse {
   user     User           @relation("SurveyResponseUser", fields: [userIdx], references: [idx])
   option   SurveyOption   @relation(fields: [optionIdx], references: [idx])
 
-@@unique([userIdx, optionIdx])
-@@map("survey_response_tb")
+  @@unique([userIdx, optionIdx])
+  @@map("survey_response_tb")
+}
+
+model SurveyOptionTag {
+  optionIdx Int @map("option_idx")
+  tagIdx    Int @map("tag_idx")
+
+  option SurveyOption @relation(fields: [optionIdx], references: [idx])
+  tag    Tag          @relation(fields: [tagIdx], references: [idx])
+
+  @@id([optionIdx, tagIdx])
+  @@map("survey_option_tag_tb")
 }
 
 model ToRead {

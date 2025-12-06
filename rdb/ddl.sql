@@ -79,7 +79,7 @@ CREATE TABLE "book_highlight_tb" (
   "user_idx"   INTEGER      NOT NULL,
   "book_idx"   INTEGER      NOT NULL,
   "cfi_range"  TEXT         NOT NULL,
-  "content"    TEXT         NOT NULL,
+  "content"   TEXT         NOT NULL,
   "color_code" VARCHAR(10)  NOT NULL,
   "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "deleted_at" TIMESTAMP(3),
@@ -159,6 +159,12 @@ CREATE TABLE "survey_response_tb" (
   UNIQUE ("user_idx", "option_idx") 
 );
 
+CREATE TABLE "survey_option_tag_tb" (
+  "option_idx" INTEGER NOT NULL,
+  "tag_idx"    INTEGER NOT NULL,
+  PRIMARY KEY ("option_idx", "tag_idx")
+);
+
 CREATE TABLE "to_read_tb" (
   "user_idx"  INTEGER      NOT NULL,
   "book_idx"  INTEGER      NOT NULL,
@@ -195,6 +201,8 @@ ALTER TABLE "survey_option_tb" ADD CONSTRAINT "FK_survey_option_tb_question_idx"
 ALTER TABLE "survey_response_tb" ADD CONSTRAINT "FK_survey_response_tb_user_idx" FOREIGN KEY ("user_idx") REFERENCES "user_tb" ("idx");
 ALTER TABLE "survey_response_tb" ADD CONSTRAINT "FK_survey_response_tb_option_idx" FOREIGN KEY ("option_idx") REFERENCES "survey_option_tb" ("idx");
 ALTER TABLE "survey_option_tb" ADD CONSTRAINT "FK_survey_option_tb_book_idx" FOREIGN KEY ("book_idx") REFERENCES "book_tb" ("idx");
+ALTER TABLE "survey_option_tag_tb" ADD CONSTRAINT "FK_survey_option_tag_option_idx" FOREIGN KEY ("option_idx") REFERENCES "survey_option_tb" ("idx");
+ALTER TABLE "survey_option_tag_tb" ADD CONSTRAINT "FK_survey_option_tag_tag_idx" FOREIGN KEY ("tag_idx") REFERENCES "tag_tb" ("idx");
 
 -- Friendship FKs
 ALTER TABLE "friend_tb" ADD CONSTRAINT "FK_friend_tb_request_user_idx" FOREIGN KEY ("request_user_idx") REFERENCES "user_tb" ("idx");
