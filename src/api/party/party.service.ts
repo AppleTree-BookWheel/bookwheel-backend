@@ -3,6 +3,7 @@ import { PartyRepository } from './party.repository';
 import { CreatePartyInput } from './inputs/create-party.input';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { PartyOverviewModel } from './model/party-overview.model';
+import { PartyModel } from './model/party.model';
 
 @Injectable()
 export class PartyService {
@@ -31,5 +32,13 @@ export class PartyService {
     const response = await this.partyRepository.selectPartyOverviews();
 
     return response.map((data) => PartyOverviewModel.fromPrisma(data));
+  }
+
+  public async getPartyByIdx(partyIdx: number): Promise<PartyModel | null> {
+    const party = await this.partyRepository.selectPartyByIdx(partyIdx);
+    if (!party) {
+      return null;
+    }
+    return PartyModel.fromPrisma(party);
   }
 }
