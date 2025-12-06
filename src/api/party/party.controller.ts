@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreatePartyDto } from './dto/request/create-party.dto';
 import { User } from 'src/common/decorators/user.decorator';
 import { GetPartyOverviewResponseDto } from './dto/response/get-party-overview-response.dto';
+import { GetPartyResponseDto } from './dto/response/get-party-response.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('party')
@@ -21,5 +22,12 @@ export class PartyController {
   @Get('/overviews')
   public async getPartyOverviews(): Promise<GetPartyOverviewResponseDto[]> {
     return await this.partyService.getPartyOverviews();
+  }
+
+  @Post('/detail')
+  public async getPartyByIdx(
+    @Body('partyIdx') partyIdx: number,
+  ): Promise<GetPartyResponseDto | null> {
+    return await this.partyService.getPartyByIdx(partyIdx);
   }
 }
