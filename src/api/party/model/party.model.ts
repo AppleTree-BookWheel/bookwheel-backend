@@ -13,6 +13,9 @@ export class PartyModel {
   isPrivate: boolean;
   createdAt: Date;
 
+  bookTitle: string;
+  bookCoverImagePath: string;
+
   constructor(data: PartyModel) {
     Object.assign(this, data);
   }
@@ -30,6 +33,9 @@ export class PartyModel {
       startDate: data.startDate,
       isPrivate: data.isPrivate,
       createdAt: data.createdAt,
+
+      bookTitle: data.book.title,
+      bookCoverImagePath: data.book.coverImagePath,
     });
   }
 }

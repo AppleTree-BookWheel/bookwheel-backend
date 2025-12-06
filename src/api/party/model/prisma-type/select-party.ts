@@ -13,6 +13,13 @@ export const SELECT_PARTY = Prisma.validator<Prisma.PartyDefaultArgs>()({
     startDate: true,
     isPrivate: true,
     createdAt: true,
+
+    book: {
+      select: {
+        title: true,
+        coverImagePath: true,
+      },
+    },
   },
 });
 
