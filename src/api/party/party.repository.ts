@@ -9,6 +9,7 @@ import {
   SELECT_PARTY_OVERVIEW,
   SelectPartyOverview,
 } from './model/prisma-type/select-party-overview';
+import { UpdatePartyInput } from './inputs/update-party.input';
 
 @Injectable()
 export class PartyRepository {
@@ -48,11 +49,19 @@ export class PartyRepository {
     userIdx: number,
     partyIdx: number,
   ): Promise<void> {
-    await this.txHost.tx.partyMember.create({
+    await this.txHost.tx.party.update({
+      where: { idx: partyIdx },
       data: {
-        partyIdx,
-        userIdx,
-        status: PartyMemberStatus.JOINED,
+        currentMembers: {
+          increment: 1,
+        },
+
+        memberships: {
+          create: {
+            userIdx: userIdx,
+            status: PartyMemberStatus.JOINED,
+          },
+        },
       },
     });
   }
@@ -76,6 +85,27 @@ export class PartyRepository {
       where: {
         idx: partyIdx,
         deletedAt: null,
+      },
+    });
+  }
+
+  public async updatePartyByUserAndPartyIdx(
+    userIdx: number,
+    input: UpdatePartyInput,
+  ): Promise<void> {
+    await this.txHost.tx.party.updateMany({
+      where: {
+        idx: input.partyIdx,
+        hostUserIdx: userIdx,
+        deletedAt: null,
+      },
+      data: {
+        title: input.title,
+        description: input.description,
+        maxMembers: input.maxMembers,
+        startDate: input.startDate,
+        isPrivate: input.isPrivate,
+        password: input.password ?? null,
       },
     });
   }
