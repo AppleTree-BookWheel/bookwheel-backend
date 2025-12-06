@@ -4,6 +4,7 @@ import { CreatePartyInput } from './inputs/create-party.input';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { PartyOverviewModel } from './model/party-overview.model';
 import { PartyModel } from './model/party.model';
+import { UpdatePartyInput } from './inputs/update-party.input';
 
 @Injectable()
 export class PartyService {
@@ -40,5 +41,26 @@ export class PartyService {
       return null;
     }
     return PartyModel.fromPrisma(party);
+  }
+
+  public async updatePartyByUserAndPartyIdx(
+    userIdx: number,
+    input: UpdatePartyInput,
+  ): Promise<void> {
+    const party = await this.partyRepository.selectPartyByIdx(input.partyIdx);
+    if (!party) {
+      throw new BadRequestException('Party not found.');
+    }
+    if (party.hostUserIdx !== userIdx) {
+      throw new BadRequestException('Only the host can update the party.');
+    }
+
+    if (input.maxMembers && input.maxMembers < party.currentMembers) {
+      throw new BadRequestException(
+        `Max members cannot be less than current members (${party.currentMembers}).`,
+      );
+    }
+
+    await this.partyRepository.updatePartyByUserAndPartyIdx(userIdx, input);
   }
 }
