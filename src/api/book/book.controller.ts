@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { BookService } from './book.service';
 import { GetBookOverviewResponseDto } from './dto/response/get-book-overview-response.dto';
 import { GetBookResponseDto } from './dto/response/get-book-response.dto';
@@ -10,21 +10,21 @@ import { GetSearchBookDto } from './dto/request/get-search-book.dto';
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
-  @Get('overview')
+  @Post('overview')
   async getBookOverviewsByIdx(
     @Body() getBookOverviewDto: GetBookOverviewDto,
   ): Promise<GetBookOverviewResponseDto[]> {
     return this.bookService.getBookOverviewsByIdx(getBookOverviewDto.idx);
   }
 
-  @Get()
+  @Post()
   async getBooksByIdx(
     @Body() getBookDto: GetBookDto,
   ): Promise<GetBookResponseDto[]> {
     return this.bookService.getBooksByIdx(getBookDto.idx);
   }
 
-  @Get('search')
+  @Post('search')
   async getBooksByKeyword(
     @Body() getSearchBookDto: GetSearchBookDto,
   ): Promise<GetBookResponseDto[]> {
