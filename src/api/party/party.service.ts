@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PartyRepository } from './party.repository';
 import { CreatePartyInput } from './inputs/create-party.input';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+import { PartyOverviewModel } from './model/party-overview.model';
 
 @Injectable()
 export class PartyService {
@@ -24,5 +25,11 @@ export class PartyService {
     if (invitedUserIdxs && invitedUserIdxs.length > 0) {
       // TODO : 유저 초대 message 기능 추가 예정
     }
+  }
+
+  public async getPartyOverviews(): Promise<PartyOverviewModel[]> {
+    const response = await this.partyRepository.selectPartyOverviews();
+
+    return response.map((data) => PartyOverviewModel.fromPrisma(data));
   }
 }
