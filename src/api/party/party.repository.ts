@@ -69,4 +69,14 @@ export class PartyRepository {
       },
     });
   }
+
+  public async selectPartyByIdx(partyIdx: number): Promise<SelectParty | null> {
+    return await this.txHost.tx.party.findFirst({
+      ...SELECT_PARTY,
+      where: {
+        idx: partyIdx,
+        deletedAt: null,
+      },
+    });
+  }
 }
