@@ -32,6 +32,20 @@ export class PartyController {
     return await this.partyService.getPartyByIdx(partyIdx);
   }
 
+  @Post('/hosted')
+  public async getHostedPartyByUserIdx(
+    @User() user,
+  ): Promise<GetPartyOverviewResponseDto[]> {
+    return await this.partyService.getHostedPartyByUserIdx(user.idx);
+  }
+
+  @Post('/joined')
+  public async getJoinedPartyByUserIdx(
+    @User() user,
+  ): Promise<GetPartyOverviewResponseDto[]> {
+    return await this.partyService.getJoinedPartyByUserIdx(user.idx);
+  }
+
   @Patch()
   public async updatePartyByUserAndPartyIdx(
     @User() user,
