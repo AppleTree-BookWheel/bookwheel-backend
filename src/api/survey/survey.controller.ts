@@ -2,8 +2,9 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
+  Param,
   ParseArrayPipe,
+  ParseIntPipe,
   Post,
   Put,
   UseGuards,
@@ -20,7 +21,7 @@ import { UpdateSurveyResponseDto } from './dto/request/update-survey-response.dt
 export class SurveyController {
   constructor(private readonly surveyService: SurveyService) {}
 
-  @Get('/response')
+  @Post('/response/detail')
   async getSurveyResponseByQuestionIdx(
     @User() user,
     @Body('questionIdx') questionIdx: number,
@@ -55,10 +56,10 @@ export class SurveyController {
     );
   }
 
-  @Delete('/response')
+  @Delete('/response/:questionIdx')
   async deleteSurveyResponse(
     @User() user,
-    @Body('questionIdx') questionIdx: number,
+    @Param('questionIdx', ParseIntPipe) questionIdx: number,
   ): Promise<void> {
     await this.surveyService.deleteSurveyResponse(user.idx, questionIdx);
   }

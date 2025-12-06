@@ -24,7 +24,7 @@ import { GetBookHighlightResponseDto } from './dto/response/get-book-highlight-r
 export class BookHighlightController {
   constructor(private readonly bookHighlightService: BookHighlightService) {}
 
-  @Get('/all')
+  @Post('/all')
   public async getHighlightsByPartyIdx(
     @Body('partyIdx') partyIdx: number,
   ): Promise<GetBookHighlightResponseDto[]> {
@@ -32,7 +32,7 @@ export class BookHighlightController {
   }
 
   // 내 하이라이트 모음 페이지를 위한 API
-  @Get()
+  @Post('/my')
   public async getMyHighlight(
     @User() user,
     @Body('partyIdx') partyIdx: number,
@@ -48,7 +48,7 @@ export class BookHighlightController {
     await this.bookHighlightService.createHighlight(user.idx, dto);
   }
 
-  @Delete()
+  @Delete('/:highlightIdx')
   public async deleteHighlightByHighlightAndUserIdx(
     @User() user,
     @Param('highlightIdx', ParseIntPipe) highlightIdx: number,
@@ -59,7 +59,7 @@ export class BookHighlightController {
     );
   }
 
-  @Get('/comments')
+  @Post('/comments/list')
   public async getCommentsByHighlightIdx(
     @Body('highlightIdx') highlightIdx: number,
   ): Promise<GetCommentResponseDto[]> {

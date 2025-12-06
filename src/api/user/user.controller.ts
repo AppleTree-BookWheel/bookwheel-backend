@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
   Patch,
   Post,
   UseGuards,
@@ -20,7 +19,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   // 로그인, id 중복 검사시 사용
-  @Get('id')
+  @Post('id')
   async getUserById(
     @Body('id') id: string,
   ): Promise<GetUserResponseDto | null> {
@@ -28,7 +27,7 @@ export class UserController {
   }
 
   // id로 친구 검색시 사용
-  @Get('search')
+  @Post('search')
   @UseGuards(JwtAuthGuard)
   async getPublicUserById(
     @Body('id') id: string,
@@ -36,7 +35,7 @@ export class UserController {
     return this.userService.getPublicUserById(id);
   }
 
-  @Get()
+  @Post('my-info')
   @UseGuards(JwtAuthGuard)
   async getMyInfo(@User() user): Promise<GetUserResponseDto> {
     return this.userService.getUserByIdx(user.idx);
