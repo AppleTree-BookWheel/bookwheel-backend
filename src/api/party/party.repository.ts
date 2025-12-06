@@ -89,6 +89,41 @@ export class PartyRepository {
     });
   }
 
+  public async selectHostedPartyByUserIdx(
+    userIdx: number,
+  ): Promise<SelectPartyOverview[]> {
+    return await this.txHost.tx.party.findMany({
+      ...SELECT_PARTY_OVERVIEW,
+      where: {
+        hostUserIdx: userIdx,
+        deletedAt: null,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  public async selectJoinedPartyByUserIdx(
+    userIdx: number,
+  ): Promise<SelectPartyOverview[]> {
+    return await this.txHost.tx.party.findMany({
+      ...SELECT_PARTY_OVERVIEW,
+      where: {
+        memberships: {
+          some: {
+            userIdx: userIdx,
+            status: PartyMemberStatus.JOINED,
+          },
+        },
+        deletedAt: null,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
   public async updatePartyByUserAndPartyIdx(
     userIdx: number,
     input: UpdatePartyInput,
