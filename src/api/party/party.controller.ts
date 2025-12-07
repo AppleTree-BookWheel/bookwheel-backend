@@ -17,6 +17,7 @@ import { GetPartyOverviewResponseDto } from './dto/response/get-party-overview-r
 import { GetPartyResponseDto } from './dto/response/get-party-response.dto';
 import { UpdatePartyDto } from './dto/request/update-party.dto';
 import { GetPartyMemberResponseDto } from './dto/response/get-party-member-response.dto';
+import { JoinPartyDto } from './dto/request/join-party.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('party')
@@ -36,9 +37,9 @@ export class PartyController {
   // 파티 가입 (PartyMembers에 유저 추가)
   public async joinParty(
     @User() user,
-    @Body('partyIdx') partyIdx: number,
+    @Body() dto: JoinPartyDto,
   ): Promise<void> {
-    await this.partyService.joinParty(user.idx, partyIdx);
+    await this.partyService.joinParty(user.idx, dto);
   }
 
   @Get('/overviews')
