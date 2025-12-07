@@ -214,4 +214,30 @@ export class PartyRepository {
       },
     });
   }
+
+  public async deletePartyMemberByUserAndPartyIdx(
+    userIdx: number,
+    partyIdx: number,
+  ): Promise<void> {
+    await this.txHost.tx.party.update({
+      where: { idx: partyIdx },
+      data: {
+        currentMembers: {
+          decrement: 1,
+        },
+
+        memberships: {
+          updateMany: {
+            where: {
+              userIdx: userIdx,
+              partyIdx: partyIdx,
+            },
+            data: {
+              status: PartyMemberStatus.LEFT,
+            },
+          },
+        },
+      },
+    });
+  }
 }
