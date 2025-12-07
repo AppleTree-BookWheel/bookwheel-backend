@@ -1,5 +1,5 @@
-import { BookOverviewModel } from 'src/api/book/model/book-overview.model';
+import { GetBookOverviewDto } from 'src/api/book/dto/request/get-book-overview.dto';
 
 export class GetSimilarBooksRecommendResponseDto {
-  bookList: BookOverviewModel[];
+  bookList: GetBookOverviewDto[];
 }
