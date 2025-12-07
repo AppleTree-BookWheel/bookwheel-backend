@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PartyRepository } from './party.repository';
 import { CreatePartyInput } from './inputs/create-party.input';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { PartyOverviewModel } from './model/party-overview.model';
 import { PartyModel } from './model/party.model';
 import { UpdatePartyInput } from './inputs/update-party.input';
-
+import { PartyMemberStatus } from './constants/party-member-status';
+// TODO : party join 메서드 구현
 @Injectable()
 export class PartyService {
   constructor(private readonly partyRepository: PartyRepository) {}
@@ -27,6 +27,31 @@ export class PartyService {
     if (invitedUserIdxs && invitedUserIdxs.length > 0) {
       // TODO : 유저 초대 message 기능 추가 예정
     }
+  }
+
+  public async joinParty(userIdx: number, partyIdx: number): Promise<void> {
+    const party = await this.partyRepository.selectPartyByIdx(partyIdx);
+    if (!party) {
+      throw new BadRequestException('Party not found.');
+    }
+    if (party.currentMembers >= party.maxMembers) {
+      throw new BadRequestException('Party is full.');
+    }
+
+    const existingMember =
+      await this.partyRepository.selectPartyMemberByUserAndPartyIdx(
+        userIdx,
+        partyIdx,
+      );
+
+    if (existingMember) {
+      if (existingMember.status === PartyMemberStatus.LEFT) {
+        throw new BadRequestException('User has left the party before.');
+      }
+      throw new BadRequestException('User is already a member of the party.');
+    }
+
+    await this.partyRepository.insertPartyMember(userIdx, partyIdx);
   }
 
   public async getPartyOverviews(): Promise<PartyOverviewModel[]> {
