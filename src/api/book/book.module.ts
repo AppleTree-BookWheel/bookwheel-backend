@@ -7,5 +7,6 @@ import { PrismaService } from 'prisma/prisma.service';
 @Module({
   controllers: [BookController],
   providers: [BookService, BookRepository, PrismaService],
+  exports: [BookService],
 })
 export class BookModule {}
