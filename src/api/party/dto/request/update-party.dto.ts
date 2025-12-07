@@ -3,6 +3,7 @@ import {
   IsDate,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
 } from 'class-validator';
 
@@ -21,7 +22,7 @@ export class UpdatePartyDto {
    *
    * @example "이 책 같이 읽을 사람 구해요"
    */
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   title?: string;
 
@@ -30,7 +31,7 @@ export class UpdatePartyDto {
    *
    * @example "매일 1시간씩 읽어요"
    */
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   description?: string;
 
@@ -39,7 +40,7 @@ export class UpdatePartyDto {
    *
    *  @example 10
    */
-  @IsNotEmpty()
+  @IsOptional()
   @IsInt()
   maxMembers?: number;
 
@@ -48,7 +49,7 @@ export class UpdatePartyDto {
    *
    * @example "2025-01-01T00:00:00.000Z"
    */
-  @IsNotEmpty()
+  @IsOptional()
   @IsDate()
   startDate?: Date;
 
@@ -57,7 +58,7 @@ export class UpdatePartyDto {
    *
    * @example false
    */
-  @IsNotEmpty()
+  @IsOptional()
   @IsBoolean()
   isPrivate?: boolean;
 
@@ -66,7 +67,7 @@ export class UpdatePartyDto {
    *
    *  @example "1234"
    */
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   password?: string;
 
@@ -75,7 +76,7 @@ export class UpdatePartyDto {
    *
    * @example [2, 5, 8]
    */
-  @IsNotEmpty()
+  @IsOptional()
   @IsInt({ each: true })
   invitedUserIdxs?: number[];
 }
