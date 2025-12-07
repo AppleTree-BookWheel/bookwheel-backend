@@ -4,7 +4,9 @@ import {
   Delete,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { GetUserResponseDto } from './dto/response/get-user-response.dto';
@@ -13,6 +15,8 @@ import { UpdatePasswordDto } from './dto/request/update-password.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { GetPublicUserResponseDto } from './dto/response/get-public-user-response.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from 'src/utils/multer.options';
 
 @Controller('user')
 export class UserController {
@@ -43,10 +47,17 @@ export class UserController {
 
   @Patch()
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file', multerOptions))
   async updateMyInfo(
     @User() user,
     @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile() file?: Express.Multer.File,
   ): Promise<void> {
+    if (file) {
+      updateUserDto.profileImagePath = (
+        file as Express.Multer.File & { location?: string }
+      ).location;
+    }
     return this.userService.updateUserByIdx(user.idx, updateUserDto);
   }
 
