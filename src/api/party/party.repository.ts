@@ -96,6 +96,43 @@ export class PartyRepository {
     });
   }
 
+  public async selectPartyOverviewByKeyword(
+    keyword: string,
+  ): Promise<SelectPartyOverview[]> {
+    return await this.txHost.tx.party.findMany({
+      ...SELECT_PARTY_OVERVIEW,
+      where: {
+        deletedAt: null,
+        status: PartyStatus.OPEN,
+        OR: [
+          {
+            title: {
+              contains: keyword,
+              mode: 'insensitive',
+            },
+          },
+          {
+            description: {
+              contains: keyword,
+              mode: 'insensitive',
+            },
+          },
+          {
+            book: {
+              title: {
+                contains: keyword,
+                mode: 'insensitive',
+              },
+            },
+          },
+        ],
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
   public async selectPartyByIdx(partyIdx: number): Promise<SelectParty | null> {
     return await this.txHost.tx.party.findFirst({
       ...SELECT_PARTY,
