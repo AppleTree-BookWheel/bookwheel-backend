@@ -14,6 +14,7 @@ import { LoginTokenModule } from './api/login-token/login-token.module';
 import { AuthModule } from './api/auth/auth.module';
 import { BookModule } from './api/book/book.module';
 import { BookHighlightModule } from './api/book-highlight/book-highlight.module';
+import { PartyModule } from './api/party/party.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { BookHighlightModule } from './api/book-highlight/book-highlight.module'
     AuthModule,
     BookModule,
     BookHighlightModule,
+    PartyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
