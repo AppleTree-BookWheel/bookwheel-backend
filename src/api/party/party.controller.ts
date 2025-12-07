@@ -13,6 +13,7 @@ export class PartyController {
   constructor(private readonly partyService: PartyService) {}
 
   @Post()
+  // 파티 생성(파티글 작성)
   public async createParty(
     @User() user,
     @Body() createPartyDto: CreatePartyDto,
@@ -20,12 +21,23 @@ export class PartyController {
     await this.partyService.createParty(user.idx, createPartyDto);
   }
 
+  @Post('/join')
+  // 파티 가입 (PartyMembers에 유저 추가)
+  public async joinParty(
+    @User() user,
+    @Body('partyIdx') partyIdx: number,
+  ): Promise<void> {
+    await this.partyService.joinParty(user.idx, partyIdx);
+  }
+
   @Get('/overviews')
+  // 파티찾기 -> 파티 목록 조회
   public async getPartyOverviews(): Promise<GetPartyOverviewResponseDto[]> {
     return await this.partyService.getPartyOverviews();
   }
 
   @Post('/detail')
+  // 파티 상세 조회
   public async getPartyByIdx(
     @Body('partyIdx') partyIdx: number,
   ): Promise<GetPartyResponseDto | null> {
@@ -33,6 +45,7 @@ export class PartyController {
   }
 
   @Post('/hosted')
+  // 참여중파티 -> 내가 관리하는 파티
   public async getHostedPartyByUserIdx(
     @User() user,
   ): Promise<GetPartyOverviewResponseDto[]> {
@@ -40,6 +53,7 @@ export class PartyController {
   }
 
   @Post('/joined')
+  // 참여중파티 -> 전체파티
   public async getJoinedPartyByUserIdx(
     @User() user,
   ): Promise<GetPartyOverviewResponseDto[]> {
@@ -47,6 +61,7 @@ export class PartyController {
   }
 
   @Patch()
+  // 파티 수정
   public async updatePartyByUserAndPartyIdx(
     @User() user,
     @Body() updatePartyDto: UpdatePartyDto,
