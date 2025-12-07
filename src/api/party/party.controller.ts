@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { PartyService } from './party.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreatePartyDto } from './dto/request/create-party.dto';
@@ -78,5 +88,14 @@ export class PartyController {
       user.idx,
       updatePartyDto,
     );
+  }
+
+  @Delete('/:partyIdx')
+  // 파티글 삭제
+  public async deletePartyByUserAndPartyIdx(
+    @User() user,
+    @Param('partyIdx', ParseIntPipe) partyIdx: number,
+  ): Promise<void> {
+    await this.partyService.deletePartyByUserAndPartyIdx(user.idx, partyIdx);
   }
 }
