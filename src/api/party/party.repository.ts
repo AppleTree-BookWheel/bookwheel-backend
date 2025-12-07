@@ -198,4 +198,20 @@ export class PartyRepository {
       },
     });
   }
+
+  public async deletePartyByUserAndPartyIdx(
+    userIdx: number,
+    partyIdx: number,
+  ): Promise<void> {
+    await this.txHost.tx.party.updateMany({
+      where: {
+        idx: partyIdx,
+        hostUserIdx: userIdx,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
 }
