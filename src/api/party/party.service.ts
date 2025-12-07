@@ -134,4 +134,25 @@ export class PartyService {
 
     await this.partyRepository.deletePartyByUserAndPartyIdx(userIdx, partyIdx);
   }
+
+  public async leaveParty(userIdx: number, partyIdx: number): Promise<void> {
+    const party = await this.partyRepository.selectPartyByIdx(partyIdx);
+    if (!party) {
+      throw new NotFoundException('Party not found.');
+    }
+
+    const member =
+      await this.partyRepository.selectPartyMemberByUserAndPartyIdx(
+        userIdx,
+        partyIdx,
+      );
+    if (!member || member.status === PartyMemberStatus.LEFT) {
+      throw new BadRequestException('User is not a member of the party.');
+    }
+
+    await this.partyRepository.deletePartyMemberByUserAndPartyIdx(
+      userIdx,
+      partyIdx,
+    );
+  }
 }
