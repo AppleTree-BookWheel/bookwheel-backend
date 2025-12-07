@@ -155,6 +155,19 @@ export class PartyRepository {
     });
   }
 
+  public async selectPartyPasswordByIdx(
+    partyIdx: number,
+  ): Promise<string | null> {
+    const party = await this.txHost.tx.party.findUnique({
+      where: { idx: partyIdx },
+      select: {
+        password: true,
+      },
+    });
+
+    return party ? party.password : null;
+  }
+
   public async selectHostedPartyByUserIdx(
     userIdx: number,
   ): Promise<SelectPartyOverview[]> {
