@@ -2,13 +2,9 @@ import { GetBookOverviewDto } from 'src/api/book/dto/request/get-book-overview.d
 import { GenreSectionDto } from './genre-section.dto';
 
 export class GetHomeRecommendResponseDto {
-  personalTop1?: GetBookOverviewDto;
-  personalTop10?: GetBookOverviewDto[];
-
-  initialTop1?: GetBookOverviewDto;
-  initialTop10?: GetBookOverviewDto[];
-  recentTop10?: GetBookOverviewDto[];
+  top1: GetBookOverviewDto;
+  top10: GetBookOverviewDto[];
+  recentTop10: GetBookOverviewDto[];
   popularTop10: GetBookOverviewDto[];
-
   genreSectionList: GenreSectionDto[];
 }

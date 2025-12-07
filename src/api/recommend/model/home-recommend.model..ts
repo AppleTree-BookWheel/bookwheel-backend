@@ -1,7 +1,7 @@
 import { BookOverviewModel } from 'src/api/book/model/book-overview.model';
 
 export class HomeRecommendModel {
-  top1: BookOverviewModel;
+  top1: BookOverviewModel | null;
   top10: BookOverviewModel[];
   recentTop10: BookOverviewModel[];
   popularTop10: BookOverviewModel[];
