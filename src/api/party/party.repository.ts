@@ -70,6 +70,18 @@ export class PartyRepository {
     });
   }
 
+  public async selectPartyMembersByIdx(
+    partyIdx: number,
+  ): Promise<SelectPartyMember[]> {
+    return await this.txHost.tx.partyMember.findMany({
+      ...SELECT_PARTY_MEMBER,
+      where: {
+        partyIdx: partyIdx,
+        status: PartyMemberStatus.JOINED,
+      },
+    });
+  }
+
   public async selectPartyMemberByUserAndPartyIdx(
     userIdx: number,
     partyIdx: number,
