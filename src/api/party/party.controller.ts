@@ -31,9 +31,17 @@ export class PartyController {
   }
 
   @Get('/overviews')
-  // 파티찾기 -> 파티 목록 조회
+  // 파티찾기 -> 전체 파티 (오버뷰))
   public async getPartyOverviews(): Promise<GetPartyOverviewResponseDto[]> {
     return await this.partyService.getPartyOverviews();
+  }
+
+  @Post('/search')
+  // 파티 검색 (키워드로 오버뷰 조회)
+  public async getPartyOverviewByKeyword(
+    @Body('keyword') keyword: string,
+  ): Promise<GetPartyOverviewResponseDto[]> {
+    return await this.partyService.getPartyOverviewByKeyword(keyword);
   }
 
   @Post('/detail')
