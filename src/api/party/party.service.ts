@@ -11,6 +11,7 @@ import { PartyModel } from './model/party.model';
 import { UpdatePartyInput } from './inputs/update-party.input';
 import { PartyMemberStatus } from './constants/party-member-status';
 import { PartyMemberModel } from './model/party-member.model';
+import { JoinPartyInput } from './inputs/join-party.input';
 @Injectable()
 export class PartyService {
   constructor(private readonly partyRepository: PartyRepository) {}
@@ -34,10 +35,30 @@ export class PartyService {
     }
   }
 
-  public async joinParty(userIdx: number, partyIdx: number): Promise<void> {
+  public async joinParty(
+    userIdx: number,
+    input: JoinPartyInput,
+  ): Promise<void> {
+    const { partyIdx, password } = input;
+
     const party = await this.partyRepository.selectPartyByIdx(partyIdx);
     if (!party) {
       throw new NotFoundException('Party not found.');
+    }
+
+    if (party.isPrivate) {
+      if (!password) {
+        throw new BadRequestException(
+          'Password is required to join private party.',
+        );
+      }
+
+      const savedPassword =
+        await this.partyRepository.selectPartyPasswordByIdx(partyIdx);
+
+      if (savedPassword !== password) {
+        throw new ForbiddenException('Incorrect password for private party.');
+      }
     }
     if (party.currentMembers >= party.maxMembers) {
       throw new BadRequestException('Party is full.');
