@@ -1,11 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PartyRepository } from './party.repository';
 import { CreatePartyInput } from './inputs/create-party.input';
 import { PartyOverviewModel } from './model/party-overview.model';
 import { PartyModel } from './model/party.model';
 import { UpdatePartyInput } from './inputs/update-party.input';
 import { PartyMemberStatus } from './constants/party-member-status';
-// TODO : party join 메서드 구현
 @Injectable()
 export class PartyService {
   constructor(private readonly partyRepository: PartyRepository) {}
@@ -32,7 +36,7 @@ export class PartyService {
   public async joinParty(userIdx: number, partyIdx: number): Promise<void> {
     const party = await this.partyRepository.selectPartyByIdx(partyIdx);
     if (!party) {
-      throw new BadRequestException('Party not found.');
+      throw new NotFoundException('Party not found.');
     }
     if (party.currentMembers >= party.maxMembers) {
       throw new BadRequestException('Party is full.');
@@ -101,10 +105,10 @@ export class PartyService {
   ): Promise<void> {
     const party = await this.partyRepository.selectPartyByIdx(input.partyIdx);
     if (!party) {
-      throw new BadRequestException('Party not found.');
+      throw new NotFoundException('Party not found.');
     }
     if (party.hostUserIdx !== userIdx) {
-      throw new BadRequestException('Only the host can update the party.');
+      throw new ForbiddenException('Only the host can update the party.');
     }
 
     if (input.maxMembers && input.maxMembers < party.currentMembers) {
@@ -114,5 +118,20 @@ export class PartyService {
     }
 
     await this.partyRepository.updatePartyByUserAndPartyIdx(userIdx, input);
+  }
+
+  public async deletePartyByUserAndPartyIdx(
+    userIdx: number,
+    partyIdx: number,
+  ): Promise<void> {
+    const party = await this.partyRepository.selectPartyByIdx(partyIdx);
+    if (!party) {
+      throw new NotFoundException('Party not found.');
+    }
+    if (party.hostUserIdx !== userIdx) {
+      throw new ForbiddenException('Only the host can delete the party.');
+    }
+
+    await this.partyRepository.deletePartyByUserAndPartyIdx(userIdx, partyIdx);
   }
 }
