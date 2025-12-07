@@ -60,6 +60,15 @@ export class PartyService {
     return response.map((data) => PartyOverviewModel.fromPrisma(data));
   }
 
+  public async getPartyOverviewByKeyword(
+    keyword: string,
+  ): Promise<PartyOverviewModel[]> {
+    const response =
+      await this.partyRepository.selectPartyOverviewByKeyword(keyword);
+
+    return response.map((data) => PartyOverviewModel.fromPrisma(data));
+  }
+
   public async getPartyByIdx(partyIdx: number): Promise<PartyModel | null> {
     const party = await this.partyRepository.selectPartyByIdx(partyIdx);
     if (!party) {
