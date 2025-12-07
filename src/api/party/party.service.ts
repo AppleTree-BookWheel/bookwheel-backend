@@ -10,6 +10,7 @@ import { PartyOverviewModel } from './model/party-overview.model';
 import { PartyModel } from './model/party.model';
 import { UpdatePartyInput } from './inputs/update-party.input';
 import { PartyMemberStatus } from './constants/party-member-status';
+import { PartyMemberModel } from './model/party-member.model';
 @Injectable()
 export class PartyService {
   constructor(private readonly partyRepository: PartyRepository) {}
@@ -97,6 +98,15 @@ export class PartyService {
       await this.partyRepository.selectJoinedPartyByUserIdx(userIdx);
 
     return response.map((data) => PartyOverviewModel.fromPrisma(data));
+  }
+
+  public async getPartyMembersByIdx(
+    partyIdx: number,
+  ): Promise<PartyMemberModel[]> {
+    const response =
+      await this.partyRepository.selectPartyMembersByIdx(partyIdx);
+
+    return response.map((data) => PartyMemberModel.fromPrisma(data));
   }
 
   public async updatePartyByUserAndPartyIdx(
