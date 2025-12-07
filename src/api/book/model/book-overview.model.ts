@@ -11,10 +11,6 @@ export class BookOverviewModel {
   averageRating: number;
   ratingsCount: number;
 
-  koreanTitle: string | null;
-  koreanAuthor: string | null;
-  koreanCoverPath: string | null;
-
   constructor(data: BookOverviewModel) {
     Object.assign(this, data);
   }
@@ -30,9 +26,6 @@ export class BookOverviewModel {
       coverImagePath: data.coverImagePath,
       averageRating: data.averageRating,
       ratingsCount: data.ratingsCount,
-      koreanTitle: data.koreanTitle,
-      koreanAuthor: data.koreanAuthor,
-      koreanCoverPath: data.koreanCoverPath,
     });
   }
 }
