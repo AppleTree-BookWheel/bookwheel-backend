@@ -1,10 +1,12 @@
-import { GetBookOverviewDto } from 'src/api/book/dto/request/get-book-overview.dto';
-import { GenreSectionDto } from './genre-section.dto';
+import { GetBookOverviewResponseDto } from 'src/api/book/dto/response/get-book-overview-response.dto';
 
 export class GetHomeRecommendResponseDto {
-  top1: GetBookOverviewDto;
-  top10: GetBookOverviewDto[];
-  recentTop10: GetBookOverviewDto[];
-  popularTop10: GetBookOverviewDto[];
-  genreSectionList: GenreSectionDto[];
+  top1: GetBookOverviewResponseDto | null;
+  top10: GetBookOverviewResponseDto[];
+  recentTop10: GetBookOverviewResponseDto[];
+  popularTop10: GetBookOverviewResponseDto[];
+  genreSectionList: {
+    genre: string;
+    bookList: GetBookOverviewResponseDto[];
+  }[];
 }

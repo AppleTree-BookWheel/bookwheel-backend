@@ -5,8 +5,4 @@ export class GetBookOverviewResponseDto {
   coverImagePath: string;
   averageRating: number;
   ratingsCount: number;
-
-  koreanTitle?: string | null;
-  koreanAuthor?: string | null;
-  koreanCoverPath?: string | null;
 }
