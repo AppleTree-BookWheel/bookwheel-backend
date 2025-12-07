@@ -12,12 +12,6 @@ export class BookModel {
   ratingsCount: number;
   createdAt: Date;
 
-  koreanTitle?: string | null;
-  koreanAuthor?: string | null;
-  koreanCoverPath?: string | null;
-  languageCode?: string | null;
-  isbn13?: string | null;
-
   publisher?: string | null;
   publicationYear?: number | null;
   description?: string | null;
@@ -40,12 +34,6 @@ export class BookModel {
       averageRating: data.averageRating,
       ratingsCount: data.ratingsCount,
       createdAt: data.createdAt,
-
-      koreanTitle: data.koreanTitle,
-      koreanAuthor: data.koreanAuthor,
-      koreanCoverPath: data.koreanCoverPath,
-      languageCode: data.languageCode,
-      isbn13: data.isbn13,
 
       publisher: data.publisher,
       publicationYear: data.publicationYear,
