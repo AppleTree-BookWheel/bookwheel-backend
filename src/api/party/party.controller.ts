@@ -98,4 +98,13 @@ export class PartyController {
   ): Promise<void> {
     await this.partyService.deletePartyByUserAndPartyIdx(user.idx, partyIdx);
   }
+
+  @Delete('/leave/:partyIdx')
+  // 파티 탈퇴
+  public async leaveParty(
+    @User() user,
+    @Param('partyIdx', ParseIntPipe) partyIdx: number,
+  ): Promise<void> {
+    await this.partyService.leaveParty(user.idx, partyIdx);
+  }
 }
