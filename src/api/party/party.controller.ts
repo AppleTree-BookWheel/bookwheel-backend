@@ -16,6 +16,7 @@ import { User } from 'src/common/decorators/user.decorator';
 import { GetPartyOverviewResponseDto } from './dto/response/get-party-overview-response.dto';
 import { GetPartyResponseDto } from './dto/response/get-party-response.dto';
 import { UpdatePartyDto } from './dto/request/update-party.dto';
+import { GetPartyMemberResponseDto } from './dto/response/get-party-member-response.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('party')
@@ -76,6 +77,14 @@ export class PartyController {
     @User() user,
   ): Promise<GetPartyOverviewResponseDto[]> {
     return await this.partyService.getJoinedPartyByUserIdx(user.idx);
+  }
+
+  @Post('/members')
+  // 파티 멤버 조회
+  public async getPartyMembersByIdx(
+    @Body('partyIdx') partyIdx: number,
+  ): Promise<GetPartyMemberResponseDto[]> {
+    return await this.partyService.getPartyMembersByIdx(partyIdx);
   }
 
   @Patch()
