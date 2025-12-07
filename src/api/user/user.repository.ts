@@ -142,4 +142,16 @@ export class UserRepository {
       where: { userIdx: idx },
     });
   }
+
+  public async selectUsersByIdxList(
+    idxList: number[],
+  ): Promise<SelectPublicUser[]> {
+    return await this.txHost.tx.user.findMany({
+      ...SELECT_PUBLIC_USER,
+      where: {
+        deletedAt: null,
+        idx: { in: idxList },
+      },
+    });
+  }
 }
