@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { BookRepository } from './book.repository';
 import { BookOverviewModel } from './model/book-overview.model';
 import { BookModel } from './model/book.model';
+import { UpdateMyBookProgressInput } from './inputs/update-my-book-progress-input';
 
 @Injectable()
 export class BookService {
@@ -34,5 +35,15 @@ export class BookService {
       return [];
     }
     return response.map((response) => BookModel.fromPrisma(response));
+  }
+
+  public async updateMyBookProgressByUserAndBookIdx(
+    userIdx: number,
+    input: UpdateMyBookProgressInput,
+  ): Promise<void> {
+    await this.bookRepository.upsertMyBookProgressByUserAndBookIdx(
+      userIdx,
+      input,
+    );
   }
 }
