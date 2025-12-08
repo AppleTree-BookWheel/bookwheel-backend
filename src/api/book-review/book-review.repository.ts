@@ -5,6 +5,7 @@ import { CreateBookReviewInput } from './inputs/create-book-review.input';
 import { SELECT_BOOK_RATING } from './model/prisma-type/select-book-rating';
 import { SELECT_BOOK_REVIEW } from './model/prisma-type/select-book-review';
 import { BookReviewModel } from './model/book-review.model';
+import { UpdateBookReviewInput } from './inputs/update-book-review.input';
 
 @Injectable()
 export class BookReviewRepository {
@@ -67,5 +68,55 @@ export class BookReviewRepository {
       rating: rating.rating,
       createdAt: review.createdAt,
     };
+  }
+
+  public async updateBookReviewByUserAndBookIdx(
+    userIdx: number,
+    input: UpdateBookReviewInput,
+  ): Promise<void> {
+    await this.txHost.tx.bookReview.updateMany({
+      where: {
+        userIdx: userIdx,
+        bookIdx: input.bookIdx,
+      },
+      data: {
+        content: input.content,
+      },
+    });
+
+    await this.txHost.tx.bookRating.updateMany({
+      where: {
+        userIdx: userIdx,
+        bookIdx: input.bookIdx,
+      },
+      data: {
+        rating: input.rating,
+      },
+    });
+  }
+
+  public async deleteBookReviewByUserAndBookIdx(
+    userIdx: number,
+    bookIdx: number,
+  ): Promise<void> {
+    await this.txHost.tx.bookReview.updateMany({
+      where: {
+        userIdx: userIdx,
+        bookIdx: bookIdx,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+
+    await this.txHost.tx.bookRating.updateMany({
+      where: {
+        userIdx: userIdx,
+        bookIdx: bookIdx,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
   }
 }
