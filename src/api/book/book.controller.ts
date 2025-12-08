@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
 import { BookService } from './book.service';
 import { GetBookOverviewResponseDto } from './dto/response/get-book-overview-response.dto';
 import { GetBookResponseDto } from './dto/response/get-book-response.dto';
@@ -8,7 +8,9 @@ import { GetSearchBookDto } from './dto/request/get-search-book.dto';
 import { UpdateMyBookDto } from './dto/request/update-my-book.dto';
 import { User } from 'src/common/decorators/user.decorator';
 import { GetMyBookProgressResponseDto } from './dto/response/get-my-book-progress-response.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('book')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
