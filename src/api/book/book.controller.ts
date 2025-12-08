@@ -7,6 +7,7 @@ import { GetBookDto } from './dto/request/get-book.dto';
 import { GetSearchBookDto } from './dto/request/get-search-book.dto';
 import { UpdateMyBookDto } from './dto/request/update-my-book.dto';
 import { User } from 'src/common/decorators/user.decorator';
+import { GetMyBookProgressResponseDto } from './dto/response/get-my-book-progress-response.dto';
 
 @Controller('book')
 export class BookController {
@@ -39,5 +40,16 @@ export class BookController {
     @Body() dto: UpdateMyBookDto,
   ): Promise<void> {
     return this.bookService.updateMyBookProgressByUserAndBookIdx(user.idx, dto);
+  }
+
+  @Post('/my-progress')
+  async getMyBookProgressByUserAndBookIdx(
+    @User() user,
+    @Body('bookIdx') bookIdx: number,
+  ): Promise<GetMyBookProgressResponseDto | null> {
+    return this.bookService.getMyBookProgressByUserAndBookIdx(
+      user.idx,
+      bookIdx,
+    );
   }
 }
