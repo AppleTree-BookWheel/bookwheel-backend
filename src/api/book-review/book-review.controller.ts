@@ -1,9 +1,10 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
 import { BookReviewService } from './book-review.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateBookReviewDto } from './dto/request/create-book-review.dto';
 import { User } from 'src/common/decorators/user.decorator';
 import { GetBookReviewResponseDto } from './dto/response/get-book-review-response.dto';
+import { UpdateBookReviewDto } from './dto/request/update-book-review.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('book-review')
@@ -18,7 +19,7 @@ export class BookReviewController {
     return this.bookReviewService.createBookReview(user.idx, dto);
   }
 
-  @Post('/get')
+  @Post('/my')
   public async getBookReviewByUserAndBookIdx(
     @User() user,
     @Body('bookIdx') bookIdx: number,
@@ -26,6 +27,17 @@ export class BookReviewController {
     return this.bookReviewService.getBookReviewByUserAndBookIdx(
       user.idx,
       bookIdx,
+    );
+  }
+
+  @Patch()
+  public async updateBookReviewByUserAndBookIdx(
+    @User() user,
+    @Body() dto: UpdateBookReviewDto,
+  ): Promise<void> {
+    return this.bookReviewService.updateBookReviewByUserAndBookIdx(
+      user.idx,
+      dto,
     );
   }
 }
