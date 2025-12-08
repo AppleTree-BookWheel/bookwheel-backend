@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { BookReviewRepository } from './book-review.repository';
 import { CreateBookReviewInput } from './inputs/create-book-review.input';
 import { BookReviewModel } from './model/book-review.model';
+import { UpdateBookReviewInput } from './inputs/update-book-review.input';
 
 @Injectable()
 export class BookReviewService {
@@ -25,6 +26,16 @@ export class BookReviewService {
     return this.bookReviewRepository.selectBookReviewByUserAndBookIdx(
       userIdx,
       bookIdx,
+    );
+  }
+
+  public async updateBookReviewByUserAndBookIdx(
+    userIdx: number,
+    input: UpdateBookReviewInput,
+  ): Promise<void> {
+    return this.bookReviewRepository.updateBookReviewByUserAndBookIdx(
+      userIdx,
+      input,
     );
   }
 }
