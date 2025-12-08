@@ -92,4 +92,19 @@ export class BookRepository {
       },
     });
   }
+
+  public async selectMyBookProgressByUserAndBookIdx(
+    userIdx: number,
+    bookIdx: number,
+  ): Promise<SelectMyBookProgress | null> {
+    return await this.txHost.tx.myBookProgress.findUnique({
+      ...SELECT_MY_BOOK_PROGRESS,
+      where: {
+        userIdx_bookIdx: {
+          userIdx: userIdx,
+          bookIdx: bookIdx,
+        },
+      },
+    });
+  }
 }
