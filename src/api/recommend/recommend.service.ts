@@ -37,24 +37,7 @@ export class RecommendService {
       bookMap.set(book.idx, new BookOverviewModel(book));
     });
 
-    const result = new HomeRecommendModel({
-      top1: pyData.top1?.bookIdx
-        ? (bookMap.get(pyData.top1.bookIdx) ?? null)
-        : null,
-      top10: (pyData.top10 || []).map((book) => bookMap.get(book.bookIdx)!),
-      recentTop10: (pyData.recentTop10 || []).map(
-        (b) => bookMap.get(b.bookIdx)!,
-      ),
-      popularTop10: (pyData.popularTop10 || []).map(
-        (b) => bookMap.get(b.bookIdx)!,
-      ),
-      genreSectionList: (pyData.genreSectionList || []).map((section) => ({
-        genre: section.genre,
-        bookList: section.bookList.map((b) => bookMap.get(b.bookIdx)!),
-      })),
-    });
-
-    return result;
+    return HomeRecommendModel.fromRaw(pyData, bookMap);
   }
 
   async getSimilarBooksRecommend(

@@ -20,7 +20,11 @@ export class RecommendRepository {
   async getSimilarBooksRecommend(
     bookIdx: number,
   ): Promise<BookListResponseInterface> {
-    const res = await axios.get(`${this.BASE_URL}/books/${bookIdx}`);
+    const res = await axios.post(
+      `${this.BASE_URL}/books/${bookIdx}`,
+      { idx: bookIdx },
+      { headers: { 'Content-Type': 'application/json' } },
+    );
     return res.data;
   }
 
