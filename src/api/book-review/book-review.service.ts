@@ -33,6 +33,16 @@ export class BookReviewService {
     userIdx: number,
     input: UpdateBookReviewInput,
   ): Promise<void> {
+    const existingReview =
+      await this.bookReviewRepository.selectBookReviewByUserAndBookIdx(
+        userIdx,
+        input.bookIdx,
+      );
+
+    if (existingReview?.userIdx !== userIdx) {
+      throw new BadRequestException('You can only update your own review.');
+    }
+
     return this.bookReviewRepository.updateBookReviewByUserAndBookIdx(
       userIdx,
       input,
