@@ -82,4 +82,16 @@ export class UserService {
   public async deleteUserByIdx(idx: number): Promise<void> {
     await this.userRepository.deleteUserByIdx(idx);
   }
+
+  public async getUsersByIdxList(
+    idxList: number[],
+  ): Promise<PublicUserModel[]> {
+    const response = await this.userRepository.selectUsersByIdxList(idxList);
+
+    if (!response || response.length === 0) {
+      return [];
+    }
+
+    return response.map((response) => PublicUserModel.fromPrisma(response));
+  }
 }
