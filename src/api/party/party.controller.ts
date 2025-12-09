@@ -18,6 +18,8 @@ import { GetPartyResponseDto } from './dto/response/get-party-response.dto';
 import { UpdatePartyDto } from './dto/request/update-party.dto';
 import { GetPartyMemberResponseDto } from './dto/response/get-party-member-response.dto';
 import { JoinPartyDto } from './dto/request/join-party.dto';
+import { UpdatePartyBookProgressInput } from './inputs/update-party-book-progress.input';
+import { PartyBookProgressModel } from './model/party-book-progress.model';
 
 @UseGuards(JwtAuthGuard)
 @Controller('party')
@@ -97,6 +99,30 @@ export class PartyController {
     await this.partyService.updatePartyByUserAndPartyIdx(
       user.idx,
       updatePartyDto,
+    );
+  }
+
+  @Patch('/book-progress')
+  // 파티 도서 진행도 수정(생성 및 업데이트)
+  public async updatePartyBookProgressByUserAndPartyIdx(
+    @User() user,
+    @Body() dto: UpdatePartyBookProgressInput,
+  ): Promise<void> {
+    await this.partyService.updatePartyBookProgressByUserAndPartyIdx(
+      user.idx,
+      dto,
+    );
+  }
+
+  @Post('/book-progress')
+  // 파티 도서 진행도 조회
+  public async getPartyBookProgressByUserAndPartyIdx(
+    @User() user,
+    @Body('partyIdx') partyIdx: number,
+  ): Promise<PartyBookProgressModel | null> {
+    return await this.partyService.getPartyBookProgressByUserAndPartyIdx(
+      user.idx,
+      partyIdx,
     );
   }
 

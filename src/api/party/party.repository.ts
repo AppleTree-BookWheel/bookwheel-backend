@@ -14,6 +14,11 @@ import {
   SELECT_PARTY_MEMBER,
   SelectPartyMember,
 } from './model/prisma-type/select-party-member';
+import { UpdatePartyBookProgressDto } from './dto/request/update-party-book-progress.dto';
+import {
+  SELECT_PARTY_BOOK_PROGRESS,
+  SelectPartyBookProgress,
+} from './model/prisma-type/select-party-book-progress';
 
 @Injectable()
 export class PartyRepository {
@@ -220,6 +225,45 @@ export class PartyRepository {
         startDate: input.startDate,
         isPrivate: input.isPrivate,
         password: input.password ?? null,
+      },
+    });
+  }
+
+  public async upsertPartyBookProgressByUserAndPartyIdx(
+    userIdx: number,
+    input: UpdatePartyBookProgressDto,
+  ): Promise<SelectPartyBookProgress> {
+    return await this.txHost.tx.partyBookProgress.upsert({
+      ...SELECT_PARTY_BOOK_PROGRESS,
+      where: {
+        partyIdx_userIdx: {
+          userIdx: userIdx,
+          partyIdx: input.partyIdx,
+        },
+      },
+      create: {
+        userIdx: userIdx,
+        partyIdx: input.partyIdx,
+        progress: input.progress,
+        currentCfiPosition: input.currentCfiPosition,
+      },
+      update: {
+        progress: input.progress,
+        currentCfiPosition: input.currentCfiPosition,
+        updatedAt: new Date(),
+      },
+    });
+  }
+
+  public async selectPartyBookProgressByUserAndPartyIdx(
+    userIdx: number,
+    partyIdx: number,
+  ): Promise<SelectPartyBookProgress | null> {
+    return await this.txHost.tx.partyBookProgress.findFirst({
+      ...SELECT_PARTY_BOOK_PROGRESS,
+      where: {
+        userIdx: userIdx,
+        partyIdx: partyIdx,
       },
     });
   }
