@@ -13,6 +13,8 @@ import { PartyMemberStatus } from './constants/party-member-status';
 import { PartyMemberModel } from './model/party-member.model';
 import { JoinPartyInput } from './inputs/join-party.input';
 import { UpdatePartyBookProgressInput } from './inputs/update-party-book-progress.input';
+import { Party, PartyBookProgress } from '@prisma/client';
+import { PartyBookProgressModel } from './model/party-book-progress.model';
 @Injectable()
 export class PartyService {
   constructor(private readonly partyRepository: PartyRepository) {}
@@ -169,6 +171,21 @@ export class PartyService {
       userIdx,
       input,
     );
+  }
+
+  public async getPartyBookProgressByUserAndPartyIdx(
+    userIdx: number,
+    partyIdx: number,
+  ): Promise<PartyBookProgressModel | null> {
+    const response =
+      await this.partyRepository.selectPartyBookProgressByUserAndPartyIdx(
+        userIdx,
+        partyIdx,
+      );
+    if (!response) {
+      return null;
+    }
+    return PartyBookProgressModel.fromPrisma(response);
   }
 
   public async deletePartyByUserAndPartyIdx(
