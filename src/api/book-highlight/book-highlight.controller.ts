@@ -26,7 +26,7 @@ export class BookHighlightController {
 
   @Post('/all')
   public async getHighlightsByPartyIdx(
-    @Body('partyIdx') partyIdx: number,
+    @Body('partyIdx', ParseIntPipe) partyIdx: number,
   ): Promise<GetBookHighlightResponseDto[]> {
     return await this.bookHighlightService.getHighlightsByPartyIdx(partyIdx);
   }
@@ -35,7 +35,7 @@ export class BookHighlightController {
   @Post('/my')
   public async getMyHighlight(
     @User() user,
-    @Body('partyIdx') partyIdx: number,
+    @Body('partyIdx', ParseIntPipe) partyIdx: number,
   ): Promise<GetMyHighlightResponseDto[]> {
     return await this.bookHighlightService.getMyHighlights(user.idx, partyIdx);
   }
@@ -61,7 +61,7 @@ export class BookHighlightController {
 
   @Post('/comments/list')
   public async getCommentsByHighlightIdx(
-    @Body('highlightIdx') highlightIdx: number,
+    @Body('highlightIdx', ParseIntPipe) highlightIdx: number,
   ): Promise<GetCommentResponseDto[]> {
     return await this.bookHighlightService.getCommentsByHighlightIdx(
       highlightIdx,
