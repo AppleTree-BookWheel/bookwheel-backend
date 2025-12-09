@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { BookRepository } from './book.repository';
 import { BookOverviewModel } from './model/book-overview.model';
 import { BookModel } from './model/book.model';
+import { UpdateMyBookProgressInput } from './inputs/update-my-book-progress-input';
+import { MyBookProgressModel } from './model/my-book-progress.model';
 
 @Injectable()
 export class BookService {
@@ -34,5 +36,30 @@ export class BookService {
       return [];
     }
     return response.map((response) => BookModel.fromPrisma(response));
+  }
+
+  public async updateMyBookProgressByUserAndBookIdx(
+    userIdx: number,
+    input: UpdateMyBookProgressInput,
+  ): Promise<void> {
+    await this.bookRepository.upsertMyBookProgressByUserAndBookIdx(
+      userIdx,
+      input,
+    );
+  }
+
+  public async getMyBookProgressByUserAndBookIdx(
+    userIdx: number,
+    bookIdx: number,
+  ): Promise<MyBookProgressModel | null> {
+    const response =
+      await this.bookRepository.selectMyBookProgressByUserAndBookIdx(
+        userIdx,
+        bookIdx,
+      );
+    if (!response) {
+      return null;
+    }
+    return MyBookProgressModel.fromPrisma(response);
   }
 }
