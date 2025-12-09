@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { MessageService } from './message.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateMessageDto } from './dto/request/create-message.dto';
@@ -28,5 +37,16 @@ export class MessageController {
   @Get('/sent')
   public async getSentMessages(@User() user): Promise<GetMessageResponseDto[]> {
     return await this.messageService.getSentMessages(user.idx);
+  }
+
+  @Delete('/:messageIdx')
+  public async deleteMessageByUserAndMessageIdx(
+    @User() user,
+    @Param('messageIdx', ParseIntPipe) messageIdx: number,
+  ): Promise<void> {
+    await this.messageService.deleteMessageByUserAndMessageIdx(
+      user.idx,
+      messageIdx,
+    );
   }
 }
