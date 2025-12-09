@@ -9,6 +9,8 @@ import { UpdateMyBookDto } from './dto/request/update-my-book.dto';
 import { User } from 'src/common/decorators/user.decorator';
 import { GetMyBookProgressResponseDto } from './dto/response/get-my-book-progress-response.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { MyBookSortType } from './constants/my-book-sort-type.enum';
+import { MyBookModel } from './model/my-book.model';
 
 @UseGuards(JwtAuthGuard)
 @Controller('book')
@@ -53,5 +55,13 @@ export class BookController {
       user.idx,
       bookIdx,
     );
+  }
+
+  @Post('/my-books')
+  async getMyBooksByUserIdx(
+    @User() user,
+    @Body('sortType') sortType: MyBookSortType,
+  ): Promise<MyBookModel[]> {
+    return this.bookService.getMyBooksByUserIdx(user.idx, sortType);
   }
 }

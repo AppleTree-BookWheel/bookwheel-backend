@@ -4,6 +4,8 @@ import { BookOverviewModel } from './model/book-overview.model';
 import { BookModel } from './model/book.model';
 import { UpdateMyBookProgressInput } from './inputs/update-my-book-progress-input';
 import { MyBookProgressModel } from './model/my-book-progress.model';
+import { MyBookSortType } from './constants/my-book-sort-type.enum';
+import { MyBookModel } from './model/my-book.model';
 
 @Injectable()
 export class BookService {
@@ -61,5 +63,20 @@ export class BookService {
       return null;
     }
     return MyBookProgressModel.fromPrisma(response);
+  }
+
+  public async getMyBooksByUserIdx(
+    userIdx: number,
+    sortType: MyBookSortType,
+  ): Promise<MyBookModel[]> {
+    const response = await this.bookRepository.selectMyBooksByUserIdx(
+      userIdx,
+      sortType,
+    );
+
+    if (!response || response.length === 0) {
+      return [];
+    }
+    return response.map((data) => MyBookModel.fromPrisma(data));
   }
 }
