@@ -24,7 +24,34 @@ export class MessageRepository {
         receiverIdx: input.receiverIdx,
         content: input.content,
         isRead: false,
+        sentAt: new Date(),
       },
+    });
+  }
+
+  public async selectMessageByReceiverIdx(
+    userIdx: number,
+  ): Promise<SelectMessage[]> {
+    return await this.txHost.tx.message.findMany({
+      ...SELECT_MESSAGE,
+      where: {
+        receiverIdx: userIdx,
+        deletedAt: null,
+      },
+      orderBy: { sentAt: 'desc' },
+    });
+  }
+
+  public async selectMessageBySenderIdx(
+    userIdx: number,
+  ): Promise<SelectMessage[]> {
+    return await this.txHost.tx.message.findMany({
+      ...SELECT_MESSAGE,
+      where: {
+        senderIdx: userIdx,
+        deletedAt: null,
+      },
+      orderBy: { sentAt: 'desc' },
     });
   }
 }
