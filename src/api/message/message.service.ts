@@ -29,4 +29,14 @@ export class MessageService {
         messages.map((message) => MessageModel.fromPrisma(message)),
       );
   }
+
+  public async deleteMessageByUserAndMessageIdx(
+    userIdx: number,
+    messageIdx: number,
+  ): Promise<void> {
+    await this.messageRepository.deleteMessageByUserAndMessageIdx(
+      userIdx,
+      messageIdx,
+    );
+  }
 }
