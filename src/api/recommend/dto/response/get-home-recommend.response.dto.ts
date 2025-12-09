@@ -2,8 +2,16 @@ import { GetBookOverviewResponseDto } from 'src/api/book/dto/response/get-book-o
 
 export class GetHomeRecommendResponseDto {
   top1: GetBookOverviewResponseDto | null;
-  top10: GetBookOverviewResponseDto[];
-  recentTop10: GetBookOverviewResponseDto[];
+  top10: {
+    bookList: GetBookOverviewResponseDto[];
+    userName: string | null;
+  };
+  recentTop10:
+    | {
+        bookList: GetBookOverviewResponseDto[];
+        bookName: string | null;
+      }[]
+    | null;
   popularTop10: GetBookOverviewResponseDto[];
   genreSectionList: {
     genre: string;

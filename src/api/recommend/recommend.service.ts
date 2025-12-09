@@ -22,22 +22,30 @@ export class RecommendService {
     if (pyData.top1) bookIdxList.add(pyData.top1.bookIdx);
 
     pyData.top10?.forEach((item) => bookIdxList.add(item.bookIdx));
-    pyData.recentTop10?.forEach((item) => bookIdxList.add(item.bookIdx));
     pyData.popularTop10?.forEach((item) => bookIdxList.add(item.bookIdx));
     pyData.genreSectionList?.forEach((section) =>
       section.bookList.forEach((item) => bookIdxList.add(item.bookIdx)),
     );
 
+    if (Array.isArray(pyData.recentTop10)) {
+      pyData.recentTop10.forEach((section) => {
+        bookIdxList.add(section.bookIdx);
+        section.bookList.forEach((item) => bookIdxList.add(item.bookIdx));
+      });
+    }
+
     const bookList = await this.bookService.getBookOverviewsByIdx([
       ...bookIdxList,
     ]);
     const bookMap = new Map<number, BookOverviewModel>();
-
     bookList.forEach((book) => {
       bookMap.set(book.idx, new BookOverviewModel(book));
     });
 
-    return HomeRecommendModel.fromRaw(pyData, bookMap);
+    const user = await this.userService.getUserByIdx(userIdx);
+    const userName = user.nickname;
+
+    return HomeRecommendModel.fromRaw(pyData, bookMap, userName);
   }
 
   async getSimilarBooksRecommend(
