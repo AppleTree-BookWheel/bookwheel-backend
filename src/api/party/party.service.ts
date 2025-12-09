@@ -12,6 +12,7 @@ import { UpdatePartyInput } from './inputs/update-party.input';
 import { PartyMemberStatus } from './constants/party-member-status';
 import { PartyMemberModel } from './model/party-member.model';
 import { JoinPartyInput } from './inputs/join-party.input';
+import { UpdatePartyBookProgressInput } from './inputs/update-party-book-progress.input';
 @Injectable()
 export class PartyService {
   constructor(private readonly partyRepository: PartyRepository) {}
@@ -149,6 +150,25 @@ export class PartyService {
     }
 
     await this.partyRepository.updatePartyByUserAndPartyIdx(userIdx, input);
+  }
+
+  public async updatePartyBookProgressByUserAndPartyIdx(
+    userIdx: number,
+    input: UpdatePartyBookProgressInput,
+  ): Promise<void> {
+    const member =
+      await this.partyRepository.selectPartyMemberByUserAndPartyIdx(
+        userIdx,
+        input.partyIdx,
+      );
+    if (!member || member.status === PartyMemberStatus.LEFT) {
+      throw new BadRequestException('User is not a member of the party.');
+    }
+
+    await this.partyRepository.upsertPartyBookProgressByUserAndPartyIdx(
+      userIdx,
+      input,
+    );
   }
 
   public async deletePartyByUserAndPartyIdx(
