@@ -54,4 +54,20 @@ export class MessageRepository {
       orderBy: { sentAt: 'desc' },
     });
   }
+
+  public async deleteMessageByUserAndMessageIdx(
+    userIdx: number,
+    messageIdx: number,
+  ): Promise<void> {
+    await this.txHost.tx.message.updateMany({
+      where: {
+        idx: messageIdx,
+        OR: [{ senderIdx: userIdx }, { receiverIdx: userIdx }],
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
 }
