@@ -11,6 +11,12 @@ import {
   SELECT_MY_BOOK_PROGRESS,
   SelectMyBookProgress,
 } from './model/prisma-type/select-my-book-progress';
+import { MyBookSortType } from './constants/my-book-sort-type.enum';
+import {
+  SELECT_MY_BOOK,
+  SelectMyBook,
+} from './model/prisma-type/select-my-book';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BookRepository {
@@ -64,6 +70,30 @@ export class BookRepository {
       },
       orderBy: { title: 'desc' },
       take: 10,
+    });
+  }
+
+  public async selectMyBooksByUserIdx(
+    userIdx: number,
+    sortType: MyBookSortType,
+  ): Promise<SelectMyBook[]> {
+    const sortMap: Record<
+      MyBookSortType,
+      Prisma.MyBookProgressOrderByWithRelationInput
+    > = {
+      [MyBookSortType.TITLE]: { book: { title: 'asc' } },
+      [MyBookSortType.AUTHOR]: { book: { author: 'asc' } },
+      [MyBookSortType.PUBLICATION]: { book: { publicationYear: 'desc' } },
+      [MyBookSortType.RECENTLY_VIEWED]: { updatedAt: 'desc' },
+    };
+
+    const orderBy = sortMap[sortType] ?? { updatedAt: 'desc' };
+    return await this.txHost.tx.myBookProgress.findMany({
+      ...SELECT_MY_BOOK,
+      where: {
+        userIdx: userIdx,
+      },
+      orderBy: orderBy,
     });
   }
 
