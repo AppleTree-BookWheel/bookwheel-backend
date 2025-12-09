@@ -255,6 +255,19 @@ export class PartyRepository {
     });
   }
 
+  public async selectPartyBookProgressByUserAndPartyIdx(
+    userIdx: number,
+    partyIdx: number,
+  ): Promise<SelectPartyBookProgress | null> {
+    return await this.txHost.tx.partyBookProgress.findFirst({
+      ...SELECT_PARTY_BOOK_PROGRESS,
+      where: {
+        userIdx: userIdx,
+        partyIdx: partyIdx,
+      },
+    });
+  }
+
   public async deletePartyByUserAndPartyIdx(
     userIdx: number,
     partyIdx: number,
