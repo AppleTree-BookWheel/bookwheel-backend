@@ -1,9 +1,16 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { RecommendService } from './recommend.service';
 import { User } from 'src/common/decorators/user.decorator';
 import { GetHomeRecommendResponseDto } from './dto/response/get-home-recommend.response.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { GetSimilarBooksRecommendDto } from './dto/request/get-similar-books-recommend.dto';
 import { GetSimilarUsersRecommendResponseDto } from './dto/response/get-similar-users-recommend.response.dto';
 import { GetSimilarBooksRecommendResponseDto } from './dto/response/get-similar-books-recommend.response.dto';
 
@@ -19,11 +26,9 @@ export class RecommendController {
 
   @Post('books/:idx')
   async getSimilarBooksRecommend(
-    @Body() dto: GetSimilarBooksRecommendDto,
+    @Param('idx', ParseIntPipe) idx: number,
   ): Promise<GetSimilarBooksRecommendResponseDto> {
-    const bookList = await this.recommendService.getSimilarBooksRecommend(
-      dto.idx,
-    );
+    const bookList = await this.recommendService.getSimilarBooksRecommend(idx);
     return { bookList };
   }
 

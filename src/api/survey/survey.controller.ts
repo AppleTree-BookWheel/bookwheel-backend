@@ -21,10 +21,10 @@ import { UpdateSurveyResponseDto } from './dto/request/update-survey-response.dt
 export class SurveyController {
   constructor(private readonly surveyService: SurveyService) {}
 
-  @Post('/response/detail')
+  @Post('/response/detail/:questionIdx')
   async getSurveyResponseByQuestionIdx(
     @User() user,
-    @Body('questionIdx') questionIdx: number,
+    @Param('questionIdx', ParseIntPipe) questionIdx: number,
   ): Promise<GetSurveyResponseOutDto | null> {
     return this.surveyService.getSurveyResponseByQuestionIdx(
       user.idx,
