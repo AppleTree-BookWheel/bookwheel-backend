@@ -27,6 +27,17 @@ export class MessageController {
     await this.messageService.createMessage(user.idx, dto);
   }
 
+  @Post()
+  public async getMessageByIdx(
+    @User() user,
+    @Body('messageIdx', ParseIntPipe) messageIdx: number,
+  ): Promise<GetMessageResponseDto | null> {
+    return await this.messageService.getMessageByUserAndMessageIdx(
+      user.idx,
+      messageIdx,
+    );
+  }
+
   @Get('/received')
   public async getReceivedMessages(
     @User() user,
