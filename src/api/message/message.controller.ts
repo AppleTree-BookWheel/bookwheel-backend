@@ -39,6 +39,17 @@ export class MessageController {
     return await this.messageService.getSentMessages(user.idx);
   }
 
+  @Get('/detail/:messageIdx')
+  public async getMessageByIdx(
+    @User() user,
+    @Param('messageIdx', ParseIntPipe) messageIdx: number,
+  ): Promise<GetMessageResponseDto | null> {
+    return await this.messageService.getMessageByUserAndMessageIdx(
+      user.idx,
+      messageIdx,
+    );
+  }
+
   @Delete('/:messageIdx')
   public async deleteMessageByUserAndMessageIdx(
     @User() user,

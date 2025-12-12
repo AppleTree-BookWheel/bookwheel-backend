@@ -55,12 +55,16 @@ export class MessageRepository {
     });
   }
 
-  public selectMessageByIdx(messageIdx: number): Promise<SelectMessage | null> {
+  public selectMessageIdx(
+    userIdx: number,
+    messageIdx: number,
+  ): Promise<SelectMessage | null> {
     return this.txHost.tx.message.findFirst({
       ...SELECT_MESSAGE,
       where: {
         idx: messageIdx,
         deletedAt: null,
+        OR: [{ senderIdx: userIdx }, { receiverIdx: userIdx }],
       },
     });
   }
