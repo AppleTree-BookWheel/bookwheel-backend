@@ -18,6 +18,7 @@ import { PartyModule } from './api/party/party.module';
 import { BookReviewModule } from './api/book-review/book-review.module';
 import { RecommendModule } from './api/recommend/recommend.module';
 import { MessageModule } from './api/message/message.module';
+import { FriendModule } from './api/friend/friend.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { MessageModule } from './api/message/message.module';
     BookReviewModule,
     RecommendModule,
     MessageModule,
+    FriendModule,
   ],
   controllers: [AppController],
   providers: [AppService],
