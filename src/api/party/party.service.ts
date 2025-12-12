@@ -13,11 +13,14 @@ import { PartyMemberStatus } from './constants/party-member-status';
 import { PartyMemberModel } from './model/party-member.model';
 import { JoinPartyInput } from './inputs/join-party.input';
 import { UpdatePartyBookProgressInput } from './inputs/update-party-book-progress.input';
-import { Party, PartyBookProgress } from '@prisma/client';
 import { PartyBookProgressModel } from './model/party-book-progress.model';
+import { MessageService } from '../message/message.service';
 @Injectable()
 export class PartyService {
-  constructor(private readonly partyRepository: PartyRepository) {}
+  constructor(
+    private readonly partyRepository: PartyRepository,
+    private readonly messageService: MessageService,
+  ) {}
 
   public async createParty(
     hostUserIdx: number,
@@ -31,10 +34,29 @@ export class PartyService {
       );
     }
 
-    await this.partyRepository.insertParty(hostUserIdx, partyData);
+    const party = await this.partyRepository.insertParty(
+      hostUserIdx,
+      partyData,
+    );
 
     if (invitedUserIdxs && invitedUserIdxs.length > 0) {
-      // TODO : 유저 초대 message 기능 추가 예정
+      const inviteData = {
+        type: 'INVITE',
+        partyIdx: party.idx,
+        partyTitle: party.title,
+        content: `'${party.title}' 파티에 초대되었습니다.`,
+      };
+
+      const messageContent = JSON.stringify(inviteData);
+
+      const messagePromises = invitedUserIdxs.map((receiverIdx) =>
+        this.messageService.createMessage(hostUserIdx, {
+          receiverIdx,
+          content: messageContent,
+        }),
+      );
+
+      await Promise.all(messagePromises);
     }
   }
 

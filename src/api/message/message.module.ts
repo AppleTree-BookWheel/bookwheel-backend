@@ -6,5 +6,6 @@ import { MessageRepository } from './message.repository';
 @Module({
   controllers: [MessageController],
   providers: [MessageService, MessageRepository],
+  exports: [MessageService],
 })
 export class MessageModule {}
