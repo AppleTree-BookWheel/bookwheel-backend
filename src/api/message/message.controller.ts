@@ -27,17 +27,6 @@ export class MessageController {
     await this.messageService.createMessage(user.idx, dto);
   }
 
-  @Post()
-  public async getMessageByIdx(
-    @User() user,
-    @Body('messageIdx', ParseIntPipe) messageIdx: number,
-  ): Promise<GetMessageResponseDto | null> {
-    return await this.messageService.getMessageByUserAndMessageIdx(
-      user.idx,
-      messageIdx,
-    );
-  }
-
   @Get('/received')
   public async getReceivedMessages(
     @User() user,
@@ -48,6 +37,17 @@ export class MessageController {
   @Get('/sent')
   public async getSentMessages(@User() user): Promise<GetMessageResponseDto[]> {
     return await this.messageService.getSentMessages(user.idx);
+  }
+
+  @Get('/detail/:messageIdx')
+  public async getMessageByIdx(
+    @User() user,
+    @Param('messageIdx', ParseIntPipe) messageIdx: number,
+  ): Promise<GetMessageResponseDto | null> {
+    return await this.messageService.getMessageByUserAndMessageIdx(
+      user.idx,
+      messageIdx,
+    );
   }
 
   @Delete('/:messageIdx')
