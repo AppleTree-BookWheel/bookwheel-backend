@@ -1,8 +1,14 @@
-import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { FriendService } from './friend.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from 'src/common/decorators/user.decorator';
-import { FriendOverviewModel } from './model/friend-overview.model';
 import { GetFriendOverviewResponseDto } from './dto/response/get-friend-overview-response.dto';
 import { GetFriendResponseDto } from './dto/response/get-friend-response.dto';
 
@@ -52,6 +58,18 @@ export class FriendController {
     @Param('friendIdx') friendIdx: number,
   ): Promise<void> {
     await this.friendService.acceptFriendRequestByUserAndFriendIdx(
+      user.idx,
+      friendIdx,
+    );
+  }
+
+  // 친구 삭제
+  @Delete('/:friendIdx')
+  public async deleteFriendByUserAndFriendIdx(
+    @User() user,
+    @Param('friendIdx') friendIdx: number,
+  ): Promise<void> {
+    await this.friendService.deleteFriendByUserAndFriendIdx(
       user.idx,
       friendIdx,
     );
