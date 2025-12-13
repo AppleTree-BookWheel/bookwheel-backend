@@ -27,4 +27,14 @@ export class FriendService {
       FriendOverviewModel.fromPrisma(data, userIdx),
     );
   }
+
+  public async getFriendsByUserIdx(
+    userIdx: number,
+  ): Promise<FriendOverviewModel[]> {
+    const response =
+      await this.friendRepository.selectFriendsByUserIdx(userIdx);
+    return response.map((data) =>
+      FriendOverviewModel.fromPrisma(data, userIdx),
+    );
+  }
 }
