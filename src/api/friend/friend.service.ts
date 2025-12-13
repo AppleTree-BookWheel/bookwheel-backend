@@ -77,4 +77,25 @@ export class FriendService {
 
     await this.friendRepository.updateFriendStatusByIdx(friendIdx);
   }
+
+  public async deleteFriendByUserAndFriendIdx(
+    userIdx: number,
+    friendIdx: number,
+  ): Promise<void> {
+    const response = await this.friendRepository.selectFriendByIdx(friendIdx);
+    if (!response) {
+      throw new NotFoundException('Friend relationship not found');
+    }
+
+    if (
+      response.requestUserIdx !== userIdx &&
+      response.receiveUserIdx !== userIdx
+    ) {
+      throw new ForbiddenException(
+        'You are not authorized to delete this friend relationship',
+      );
+    }
+
+    await this.friendRepository.deleteFriendByIdx(friendIdx);
+  }
 }
