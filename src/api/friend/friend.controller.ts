@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { FriendOverviewModel } from './model/friend-overview.model';
 import { GetFriendOverviewResponseDto } from './dto/response/get-friend-overview-response.dto';
+import { GetFriendResponseDto } from './dto/response/get-friend-response.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('friend')
@@ -33,5 +34,14 @@ export class FriendController {
     @User() user,
   ): Promise<GetFriendOverviewResponseDto[]> {
     return this.friendService.getFriendsByUserIdx(user.idx);
+  }
+
+  // 친구 자세히보기 (설문 응답 포함)
+  @Get('/:idx')
+  public async getFriendByIdx(
+    @Param('idx') idx: number,
+    @User() user,
+  ): Promise<GetFriendResponseDto | null> {
+    return this.friendService.getFriendByIdx(idx, user.idx);
   }
 }
