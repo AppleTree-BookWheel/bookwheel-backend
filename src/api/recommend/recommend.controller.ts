@@ -32,7 +32,8 @@ export class RecommendController {
     return { bookList };
   }
 
-  @Get('user/:idx')
+  @Get('user')
+  @UseGuards(JwtAuthGuard)
   async getSimilarUsersRecommend(
     @User() user,
   ): Promise<GetSimilarUsersRecommendResponseDto> {
