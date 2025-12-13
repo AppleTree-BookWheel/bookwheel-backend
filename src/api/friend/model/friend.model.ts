@@ -3,8 +3,8 @@ import { SelectFriend } from './prisma-type/select-friend';
 export class FriendModel {
   friendshipIdx: number;
   friendUserIdx: number;
-  friendNickname: string;
-  friendProfileImagePath: string | null;
+  nickname: string;
+  profileImagePath: string | null;
 
   surveyOptionIdxs: number[];
 
@@ -24,8 +24,8 @@ export class FriendModel {
     return new FriendModel({
       friendshipIdx: data.idx,
       friendUserIdx: friend.idx,
-      friendNickname: friend.nickname,
-      friendProfileImagePath: friend.profileImagePath,
+      nickname: friend.nickname,
+      profileImagePath: friend.profileImagePath,
 
       surveyOptionIdxs: optionIdxs,
 
