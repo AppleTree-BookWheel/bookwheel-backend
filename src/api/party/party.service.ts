@@ -15,6 +15,7 @@ import { JoinPartyInput } from './inputs/join-party.input';
 import { UpdatePartyBookProgressInput } from './inputs/update-party-book-progress.input';
 import { PartyBookProgressModel } from './model/party-book-progress.model';
 import { MessageService } from '../message/message.service';
+import { KickPartyMembersInput } from './inputs/kick-party-members.input';
 @Injectable()
 export class PartyService {
   constructor(
@@ -243,6 +244,29 @@ export class PartyService {
     await this.partyRepository.deletePartyMemberByUserAndPartyIdx(
       userIdx,
       partyIdx,
+    );
+  }
+
+  public async kickPartyMembers(
+    userIdx: number,
+    input: KickPartyMembersInput,
+  ): Promise<void> {
+    const party = await this.partyRepository.selectPartyByIdx(input.partyIdx);
+    if (!party) {
+      throw new NotFoundException('Party not found.');
+    }
+
+    if (party.hostUserIdx !== userIdx) {
+      throw new ForbiddenException('Only the host can kick party members.');
+    }
+
+    if (input.memberUserIdxs.includes(userIdx)) {
+      throw new BadRequestException('Host cannot kick yourself.');
+    }
+
+    await this.partyRepository.deletePartyMembersByMemberAndPartyIdx(
+      input.memberUserIdxs,
+      input.partyIdx,
     );
   }
 }
