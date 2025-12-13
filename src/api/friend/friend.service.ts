@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FriendRepository } from './friend.repository';
+import { FriendOverviewModel } from './model/friend-overview.model';
 
 @Injectable()
 export class FriendService {
@@ -12,6 +13,18 @@ export class FriendService {
     await this.friendRepository.insertFriendRequest(
       requestUserIdx,
       receiveUserIdx,
+    );
+  }
+
+  public async getReceivedFriendRequestsByUserIdx(
+    userIdx: number,
+  ): Promise<FriendOverviewModel[]> {
+    const response =
+      await this.friendRepository.selectReceivedFriendRequestsByUserIdx(
+        userIdx,
+      );
+    return response.map((data) =>
+      FriendOverviewModel.fromPrisma(data, userIdx),
     );
   }
 }
