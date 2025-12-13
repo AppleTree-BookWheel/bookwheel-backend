@@ -3,6 +3,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -21,7 +22,7 @@ export class FriendController {
   @Post('/request/:receiveUserIdx')
   public async createFriendRequest(
     @User() user,
-    @Param('receiveUserIdx') receiveUserIdx: number,
+    @Param('receiveUserIdx', ParseIntPipe) receiveUserIdx: number,
   ): Promise<void> {
     await this.friendService.createFriendRequest(user.idx, receiveUserIdx);
   }
@@ -46,7 +47,7 @@ export class FriendController {
   // ! userIdx 가 아니라 friendIdx 로 조회
   @Get('/:idx')
   public async getFriendByIdx(
-    @Param('idx') idx: number,
+    @Param('idx', ParseIntPipe) idx: number,
     @User() user,
   ): Promise<GetFriendResponseDto | null> {
     return this.friendService.getFriendByIdx(idx, user.idx);
@@ -56,7 +57,7 @@ export class FriendController {
   @Post('/accept/:friendIdx')
   public async acceptFriendRequestByUserAndFriendIdx(
     @User() user,
-    @Param('friendIdx') friendIdx: number,
+    @Param('friendIdx', ParseIntPipe) friendIdx: number,
   ): Promise<void> {
     await this.friendService.acceptFriendRequestByUserAndFriendIdx(
       user.idx,
@@ -68,7 +69,7 @@ export class FriendController {
   @Delete('/:friendIdx')
   public async deleteFriendByUserAndFriendIdx(
     @User() user,
-    @Param('friendIdx') friendIdx: number,
+    @Param('friendIdx', ParseIntPipe) friendIdx: number,
   ): Promise<void> {
     await this.friendService.deleteFriendByUserAndFriendIdx(
       user.idx,
