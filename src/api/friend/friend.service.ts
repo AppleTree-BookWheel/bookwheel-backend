@@ -1,4 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { FriendRepository } from './friend.repository';
 
 @Injectable()
-export class FriendService {}
+export class FriendService {
+  constructor(private readonly friendRepository: FriendRepository) {}
+
+  public async createFriendRequest(
+    requestUserIdx: number,
+    receiveUserIdx: number,
+  ): Promise<void> {
+    await this.friendRepository.insertFriendRequest(
+      requestUserIdx,
+      receiveUserIdx,
+    );
+  }
+}
