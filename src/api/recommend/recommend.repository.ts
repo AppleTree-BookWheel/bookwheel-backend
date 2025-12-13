@@ -31,7 +31,7 @@ export class RecommendRepository {
   async getSimilarUsersRecommend(
     userIdx: number,
   ): Promise<UserListResponseInterface> {
-    const res = await axios.get(`${this.BASE_URL}/user/${userIdx}`);
+    const res = await axios.get(`${this.BASE_URL}/users/${userIdx}`);
     return res.data;
   }
 }
