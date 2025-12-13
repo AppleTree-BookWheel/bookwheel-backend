@@ -17,8 +17,7 @@ export const SELECT_FRIEND = Prisma.validator<Prisma.FriendDefaultArgs>()({
         // 설문 응답
         surveyResponses: {
           select: {
-            optionIdx: true, // 프론트엔드가 식별할 핵심 키
-            option: { select: { content: true } },
+            optionIdx: true,
           },
         },
       },
