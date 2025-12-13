@@ -44,4 +44,16 @@ export class FriendController {
   ): Promise<GetFriendResponseDto | null> {
     return this.friendService.getFriendByIdx(idx, user.idx);
   }
+
+  // 친구 요청 수락
+  @Post('/accept/:friendIdx')
+  public async acceptFriendRequestByUserAndFriendIdx(
+    @User() user,
+    @Param('friendIdx') friendIdx: number,
+  ): Promise<void> {
+    await this.friendService.acceptFriendRequestByUserAndFriendIdx(
+      user.idx,
+      friendIdx,
+    );
+  }
 }
