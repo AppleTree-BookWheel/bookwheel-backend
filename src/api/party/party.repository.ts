@@ -309,4 +309,33 @@ export class PartyRepository {
       },
     });
   }
+
+  public async deletePartyMembersByMemberAndPartyIdx(
+    memberUserIdxs: number[],
+    partyIdx: number,
+  ): Promise<void> {
+    const updateResult = await this.txHost.tx.partyMember.updateMany({
+      where: {
+        userIdx: {
+          in: memberUserIdxs,
+        },
+        partyIdx: partyIdx,
+        status: PartyMemberStatus.JOINED,
+      },
+      data: {
+        status: PartyMemberStatus.LEFT,
+      },
+    });
+
+    if (updateResult.count > 0) {
+      await this.txHost.tx.party.update({
+        where: { idx: partyIdx },
+        data: {
+          currentMembers: {
+            decrement: updateResult.count,
+          },
+        },
+      });
+    }
+  }
 }
