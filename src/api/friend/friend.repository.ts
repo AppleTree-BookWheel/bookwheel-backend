@@ -28,7 +28,7 @@ export class FriendRepository {
     });
   }
 
-  public async selectFriendRequestsByUserIdx(
+  public async selectReceivedFriendRequestsByUserIdx(
     userIdx: number,
   ): Promise<SelectFriendOverview[]> {
     return await this.txHost.tx.friend.findMany({
