@@ -20,6 +20,7 @@ import { GetPartyMemberResponseDto } from './dto/response/get-party-member-respo
 import { JoinPartyDto } from './dto/request/join-party.dto';
 import { UpdatePartyBookProgressInput } from './inputs/update-party-book-progress.input';
 import { PartyBookProgressModel } from './model/party-book-progress.model';
+import { KickPartyMembersDto } from './dto/request/kick-party-members.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('party')
@@ -124,6 +125,15 @@ export class PartyController {
       user.idx,
       partyIdx,
     );
+  }
+
+  // 파티 멤버 강제 탈퇴 (호스트만 가능)
+  @Delete('/kick')
+  public async kickPartyMembers(
+    @User() user,
+    @Body() dto: KickPartyMembersDto,
+  ): Promise<void> {
+    await this.partyService.kickPartyMembers(user.idx, dto);
   }
 
   @Delete('/:partyIdx')
