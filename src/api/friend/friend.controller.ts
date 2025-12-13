@@ -43,6 +43,7 @@ export class FriendController {
   }
 
   // 친구 자세히보기 (설문 응답 포함)
+  // ! userIdx 가 아니라 friendIdx 로 조회
   @Get('/:idx')
   public async getFriendByIdx(
     @Param('idx') idx: number,
