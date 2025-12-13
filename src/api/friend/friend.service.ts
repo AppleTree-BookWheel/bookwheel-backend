@@ -1,7 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { FriendRepository } from './friend.repository';
 import { FriendOverviewModel } from './model/friend-overview.model';
 import { FriendModel } from './model/friend.model';
+import { FriendStatus } from './constants/friend-status.enum';
 
 @Injectable()
 export class FriendService {
@@ -48,5 +54,27 @@ export class FriendService {
       return null;
     }
     return FriendModel.fromPrisma(response, myUserIdx);
+  }
+
+  public async acceptFriendRequestByUserAndFriendIdx(
+    userIdx: number,
+    friendIdx: number,
+  ): Promise<void> {
+    const response = await this.friendRepository.selectFriendByIdx(friendIdx);
+    if (!response) {
+      throw new NotFoundException('Friend request not found');
+    }
+
+    if (response.receiveUserIdx !== userIdx) {
+      throw new ForbiddenException(
+        'You are not authorized to accept this friend request',
+      );
+    }
+
+    if (response.status !== FriendStatus.PENDING) {
+      throw new BadRequestException('Friend request is not in a pending state');
+    }
+
+    await this.friendRepository.updateFriendStatusByIdx(friendIdx);
   }
 }
