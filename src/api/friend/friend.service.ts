@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -17,6 +18,27 @@ export class FriendService {
     requestUserIdx: number,
     receiveUserIdx: number,
   ): Promise<void> {
+    if (requestUserIdx === receiveUserIdx) {
+      throw new BadRequestException(
+        'You cannot send a friend request to yourself',
+      );
+    }
+
+    const existingRelation =
+      await this.friendRepository.selectFriendRelationByUserIdxs(
+        requestUserIdx,
+        receiveUserIdx,
+      );
+
+    if (existingRelation) {
+      if (existingRelation.status === FriendStatus.ACCEPTED) {
+        throw new BadRequestException('You are already friends with this user');
+      }
+      throw new ConflictException(
+        'A friend request already exists between these users',
+      );
+    }
+
     await this.friendRepository.insertFriendRequest(
       requestUserIdx,
       receiveUserIdx,
