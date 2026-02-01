@@ -15,7 +15,6 @@
 ## 📐 System Architecture Diagram
 <img width="800" height="651" alt="image" src="https://github.com/user-attachments/assets/c423ff15-ea15-4c16-a28b-64814bca49fd" />
 
-**Recommendation System Workflow**
 * **API Structure:** 프론트엔드는 백엔드 API만 호출하며, 백엔드가 내부적으로 AI 서버와 통신하여 추천 결과를 받아오는 구조
 ---
 
