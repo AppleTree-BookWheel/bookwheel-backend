@@ -16,6 +16,7 @@ import { UpdatePartyBookProgressInput } from './inputs/update-party-book-progres
 import { PartyBookProgressModel } from './model/party-book-progress.model';
 import { MessageService } from '../message/message.service';
 import { KickPartyMembersInput } from './inputs/kick-party-members.input';
+import * as HashUtil from '../../utils/hash.util';
 @Injectable()
 export class PartyService {
   constructor(
@@ -35,10 +36,14 @@ export class PartyService {
       );
     }
 
-    const party = await this.partyRepository.insertParty(
-      hostUserIdx,
-      partyData,
-    );
+    const hashedPassword = partyData.password
+      ? await HashUtil.hashPassword(partyData.password)
+      : undefined;
+
+    const party = await this.partyRepository.insertParty(hostUserIdx, {
+      ...partyData,
+      password: hashedPassword,
+    });
 
     if (invitedUserIdxs && invitedUserIdxs.length > 0) {
       const inviteData = {
@@ -82,7 +87,16 @@ export class PartyService {
       const savedPassword =
         await this.partyRepository.selectPartyPasswordByIdx(partyIdx);
 
-      if (savedPassword !== password) {
+      if (!savedPassword) {
+        throw new ForbiddenException('Incorrect password for private party.');
+      }
+
+      const isPasswordValid = await HashUtil.comparePassword(
+        password,
+        savedPassword,
+      );
+
+      if (!isPasswordValid) {
         throw new ForbiddenException('Incorrect password for private party.');
       }
     }
@@ -174,7 +188,14 @@ export class PartyService {
       );
     }
 
-    await this.partyRepository.updatePartyByUserAndPartyIdx(userIdx, input);
+    const hashedPassword = input.password
+      ? await HashUtil.hashPassword(input.password)
+      : undefined;
+
+    await this.partyRepository.updatePartyByUserAndPartyIdx(userIdx, {
+      ...input,
+      password: hashedPassword,
+    });
   }
 
   public async updatePartyBookProgressByUserAndPartyIdx(
